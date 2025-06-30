@@ -492,15 +492,14 @@
 
         /* Thimbles (Shell) Game specific styles */
         .thimble-container {
-            display: flex; /* Use flex for initial spacing */
-            justify-content: center;
-            gap: 20px; /* Space between thimbles */
-            margin-top: 40px;
-            position: relative; /* For absolute positioning of thimbles and ball */
-            height: 150px; /* Sufficient height for lifting */
-            width: 100%; /* Take full width to distribute thimbles */
+            position: relative; /* Crucial for absolute positioning of children */
+            width: 100%; /* Take full width of its parent to allow centering cups within it */
             max-width: 400px; /* Max width for thimble area */
-            align-items: flex-end; /* Align to bottom for cup illusion */
+            height: 150px; /* Sufficient height for lifting */
+            margin-top: 40px; /* Keep margin */
+            display: block; /* Ensure it doesn't apply flex properties to its absolute children unintentionally */
+            margin-left: auto; /* Center the container itself */
+            margin-right: auto;
         }
 
         .thimble {
@@ -908,7 +907,7 @@
     <script>
         // --- Global Variables and Constants ---
         const CURRENCY_SYMBOL = 'NRs';
-        let currentBalance = 1000.00;
+        let currentBalance = 0.00; // Initial balance set to 0
         let usedRedeemCodes = [];
 
         // DOM Elements (Header and Redeem related)
@@ -1320,7 +1319,11 @@
         redeemCodeBtn.addEventListener('click', showRedeemPopup);
         closeRedeemBtn.addEventListener('click', () => {
             hideRedeemPopup();
-            showGameType('home'); // Always show game selection after closing popup
+            // showGameType('home'); // Always show game selection after closing popup
+            // If it's the very first visit and they close without redeeming, show home.
+            if (localStorage.getItem('currentBalance') === null || currentBalance === 0) {
+                showGameType('home');
+            }
         });
 
         submitRedeemBtn.addEventListener('click', () => {
@@ -1346,22 +1349,21 @@
                 let message = '';
                 let isSuccess = false;
 
-                switch (code) {
-                    case 'WELCOME100':
-                        amount = 100.00;
-                        message = 'Welcome bonus of NRs 100 redeemed!';
-                        isSuccess = true;
-                        break;
-                    case 'FREESPIN':
-                        amount = 10.00;
-                        message = 'Free spin bonus of NRs 10 redeemed!';
-                        isSuccess = true;
-                        break;
-                    default:
-                        message = 'Invalid or expired code.';
-                        isSuccess = false;
-                        break;
+                // New redeem codes logic
+                if (code.startsWith('BETI-Q10') && code.length === 9 && !isNaN(parseInt(code.charAt(7)))) {
+                    amount = 100.00;
+                    message = `Redeemed NRs 100 with code ${code}!`;
+                    isSuccess = true;
+                } else if (code.startsWith('BETI-Q20') && code.length === 9 && !isNaN(parseInt(code.charAt(7)))) {
+                    amount = 200.00;
+                    message = `Redeemed NRs 200 with code ${code}!`;
+                    isSuccess = true;
                 }
+                else {
+                    message = 'Invalid or expired code.';
+                    isSuccess = false;
+                }
+
 
                 if (isSuccess) {
                     currentBalance += amount;
@@ -1454,26 +1456,35 @@
          * Shows a specific game section and hides others.
          * This function is now mostly a wrapper for showing game content after loader.
          * @param {string} gameType The type of game to show ('home', 'aviator', 'mines', 'plinko', 'thimbles').
+         * @param {boolean} [doScroll=false] Whether to scroll to the game section.
          */
-        function showGameType(gameType) {
+        function showGameType(gameType, doScroll = false) {
             allGameSections.forEach(section => section.classList.remove('active')); // Hide all first
 
+            let targetSection;
             if (gameType === 'home') {
-                gameSelectionOverlay.classList.add('active');
+                targetSection = gameSelectionOverlay;
             } else if (gameType === 'aviator') {
-                aviatorGameContainer.classList.add('active');
+                targetSection = aviatorGameContainer;
                 resizeAviatorCanvas(); // Ensure canvas is sized correctly when shown
                 resetAviatorGame(); // Reset game state
             } else if (gameType === 'mines') {
-                minesGameContainer.classList.add('active');
+                targetSection = minesGameContainer;
                 resetMinesGame(); // Reset game state
             } else if (gameType === 'plinko') {
-                plinkoGameContainer.classList.add('active');
+                targetSection = plinkoGameContainer;
                 setupPlinkoBoard(); // Ensure canvas is sized correctly and board set up
                 resetPlinkoGame(); // Reset game state
             } else if (gameType === 'thimbles') { // Renamed from shell
-                thimblesGameContainer.classList.add('active');
+                targetSection = thimblesGameContainer;
                 resetThimblesGame(); // Reset thimbles game UI
+            }
+
+            if (targetSection) {
+                targetSection.classList.add('active');
+                if (doScroll) {
+                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             }
         }
 
@@ -1483,7 +1494,7 @@
                 const gameType = event.currentTarget.dataset.gameType;
                 // Show game loader for 1.5 seconds when switching games
                 showGameLoader(1500, () => {
-                    showGameType(gameType); // Show the selected game after loader finishes
+                    showGameType(gameType, true); // Show the selected game and scroll after loader finishes
                 });
             });
         });
@@ -1491,7 +1502,7 @@
         // Event listener for logo to go back to home
         logoHomeBtn.addEventListener('click', () => {
             showGameLoader(1500, () => { // 1.5 seconds for going back to home
-                showGameType('home');
+                showGameType('home', true); // Scroll to top (home)
             });
             animateBalance(currentBalance); // Ensure balance is updated
         });
@@ -2377,12 +2388,10 @@
 
         function calculateSlotPositions() {
             slotXPositions = [];
-            // Assuming thimble width is 120px (from CSS .thimble) and gap is 20px
-            const thimbleWidth = 120;
-            const thimbleGap = 20;
+            const thimbleWidth = thimbleElements[0] ? thimbleElements[0].offsetWidth : 120; // Get actual rendered width, fallback to 120px
+            const thimbleGap = 20; // Consistent gap between cups
             const numThimbles = 3;
 
-            // Calculate total width taken by thimbles and gaps
             const totalContentWidth = (thimbleWidth * numThimbles) + (thimbleGap * (numThimbles - 1));
 
             // Calculate starting X to center the thimbles in the container
@@ -2393,10 +2402,13 @@
                 slotXPositions.push(startX + i * (thimbleWidth + thimbleGap));
             }
 
-            // Set initial positions for thimble elements based on their current logical-to-visual mapping
-            thimbleElements.forEach((thimbleWrapper, logicalIndex) => {
-                const currentVisualSlot = visualSlotMapping.indexOf(logicalIndex); // Where is this logical thimble currently?
-                thimbleWrapper.style.left = `${slotXPositions[currentVisualSlot]}px`;
+            // Set current positions for thimble elements based on their current logical-to-visual mapping
+            thimbleElements.forEach((thimbleWrapper) => {
+                const logicalIndex = parseInt(thimbleWrapper.dataset.index);
+                const currentVisualSlot = visualSlotMapping.indexOf(logicalIndex);
+                if (currentVisualSlot !== -1) {
+                    thimbleWrapper.style.left = `${slotXPositions[currentVisualSlot]}px`;
+                }
             });
 
             // Position the ball under its initial thimble (after positions are set)
@@ -2412,7 +2424,6 @@
             }
 
             const targetThimbleElementWrapper = thimbleElements[thimbleLogicalIndex]; // The actual DOM element wrapper
-            const targetThimbleImage = targetThimbleElementWrapper.querySelector('img'); // The image inside
 
             // Calculate center of the image, and then adjust for ball placement
             // The ball's top position should be such that it looks like it's "under" the cup.
@@ -2758,7 +2769,8 @@
 
 
             // Determine if it's the very first visit (no balance saved)
-            const isFirstVisit = (localStorage.getItem('currentBalance') === null);
+            // If savedBalance is null OR currentBalance is exactly 0 (meaning it was initialized to 0 and no codes were redeemed yet)
+            const isFirstVisit = (localStorage.getItem('currentBalance') === null || (parseFloat(localStorage.getItem('currentBalance')) === 0 && usedRedeemCodes.length === 0));
 
             if (isFirstVisit) {
                 showRedeemPopup();
