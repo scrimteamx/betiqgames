@@ -1,0 +1,2776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Betiq - Your Gaming Hub</title>
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" as="style">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Preload cup.png for Thimbles game -->
+    <link rel="preload" href="uploaded:{DA0F4891-DE12-4376-B587-41E100D43432}.png-769bf562-f1cf-4f8c-87a5-229e553021d2" as="image">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS for neon effects, scrollbar, and specific game elements - Stake-like theme */
+        :root {
+            --stake-green: #00E676; /* A vibrant green */
+            --stake-dark: #1A2227; /* Dark background, similar to Stake */
+            --stake-card: #181F23; /* Slightly darker card/component background for more opacity feel */
+            --stake-text: #E0E0E0;
+            --stake-border: #333C44;
+            --neon-green-accent: #69F0AE; /* Lighter green for accents */
+            --neon-dark-green: #00C853; /* Darker green for depth */
+            --header-height: 70px; /* Estimate based on p-4 and text-3xl for precise padding */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--stake-dark);
+            color: var(--stake-text);
+            overflow: auto; /* Changed from hidden to allow scroll */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Custom scrollbar for scrollable elements within the app */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--stake-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--stake-green);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-dark-green);
+        }
+
+        /* Neon glow effect for active states and highlights */
+        .neon-glow-green {
+            box-shadow: 0 0 8px var(--stake-green), 0 0 16px var(--stake-green);
+        }
+
+        .neon-glow-red { /* Added for mines */
+            box-shadow: 0 0 8px #FF0000, 0 0 16px #FF0000;
+        }
+
+        .text-neon-glow-green {
+            text-shadow: 0 0 5px var(--stake-green), 0 0 10px var(--stake-green);
+        }
+
+        /* General button styling for sleeker design */
+        .btn-sleek {
+            background-color: var(--stake-green);
+            color: var(--stake-dark);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px; /* Fully rounded */
+            font-weight: 700;
+            transition: all 0.3s ease-in-out;
+            border: none;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.4); /* Green shadow */
+        }
+
+        .btn-sleek:hover {
+            background-color: var(--neon-dark-green);
+            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.6); /* Deeper shadow on hover */
+            transform: translateY(-2px);
+        }
+
+        .btn-sleek:active {
+            background-color: var(--neon-green-accent);
+            box-shadow: 0 2px 10px rgba(0, 230, 118, 0.3);
+            transform: translateY(0);
+        }
+
+        /* Secondary button style */
+        .btn-secondary-sleek {
+            background-color: transparent;
+            color: var(--stake-green);
+            border: 2px solid var(--stake-green);
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 700;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .btn-secondary-sleek:hover {
+            background-color: rgba(0, 230, 118, 0.1); /* Light green tint */
+            box-shadow: 0 0 10px var(--stake-green);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary-sleek:active {
+            background-color: rgba(0, 230, 118, 0.2);
+            transform: translateY(0);
+        }
+
+        /* Header balance animation */
+        #header-balance {
+            font-size: 2.5rem; /* Larger font for emphasis */
+            font-weight: 800;
+            color: var(--stake-green);
+            letter-spacing: -0.05em;
+            transition: all 0.3s ease-out;
+        }
+
+        /* Game card specific styles for home screen */
+        .game-card {
+            background-color: var(--stake-card);
+            border: 1px solid var(--stake-border);
+            border-radius: 1rem;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), 0 0 15px var(--stake-green);
+            border-color: var(--stake-green);
+        }
+
+        .game-card-image {
+            width: 100%;
+            height: 120px; /* Consistent height for images */
+            object-fit: cover;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+        }
+
+        .game-card-title {
+            color: var(--stake-text);
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0.75rem;
+            padding: 0 1rem;
+        }
+
+        .game-card-description {
+            color: #A0A0A0;
+            font-size: 0.85rem;
+            padding: 0 1rem 1rem;
+        }
+
+        /* Transition overlay */
+        #transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-out; /* Removed visibility delay for better control */
+            z-index: 1000;
+            pointer-events: none; /* Allow clicks through when hidden */
+        }
+
+        #transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.5s ease-in;
+            pointer-events: auto; /* Block clicks when active */
+        }
+
+        #transition-overlay.blur-active {
+             backdrop-filter: blur(8px);
+        }
+
+        #transition-overlay.fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #betiq-title-transition {
+            font-size: 5rem;
+            font-weight: 900;
+            color: var(--stake-green);
+            text-shadow: 0 0 20px var(--stake-green), 0 0 40px var(--stake-green), 0 0 60px var(--stake-green);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            position: absolute; /* To allow loader bar below it */
+            top: 40%;
+        }
+
+        #betiq-title-transition.active {
+            opacity: 1;
+        }
+
+        #betiq-title-transition.fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+        }
+
+        /* Main content area to hold game sections */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center horizontally */
+            justify-content: flex-start; /* Align content to top */
+            padding-top: var(--header-height); /* Space for the fixed header */
+            padding-bottom: 24px; /* Consistent padding at bottom */
+            padding-left: 24px;
+            padding-right: 24px;
+            box-sizing: border-box;
+            width: 100%;
+            overflow-y: auto; /* Allow scrolling for content within main if it overflows */
+        }
+
+        /* Game specific containers for individual games */
+        .game-section {
+            display: none; /* Hidden by default, will be shown via JS */
+            width: 100%; /* Take full width of main's content area */
+            max-width: 900px; /* Max width for game content */
+            padding: 20px; /* Add internal padding */
+            box-sizing: border-box;
+            flex-direction: column; /* Default to column for small screens */
+            align-items: center; /* Center internal content horizontally */
+            justify-content: center; /* Center content vertically within game container if content is smaller than container */
+            min-height: 400px; /* Ensures the container has a minimum visual presence */
+        }
+        .game-section.active {
+            display: flex; /* Show when active */
+        }
+
+        /* Desktop Layout for Game Sections */
+        @media (min-width: 768px) { /* md breakpoint */
+            .game-section {
+                flex-direction: row; /* Controls and game area side-by-side on desktop */
+                align-items: flex-start; /* Align to top */
+                justify-content: center;
+            }
+            .game-controls-wrapper { /* Wrapper for controls */
+                width: 33%; /* Controls take 1/3 width */
+                padding-right: 1.5rem; /* Space between controls and game */
+            }
+            .game-main-area { /* Wrapper for main game content */
+                width: 67%; /* Game area takes 2/3 width */
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Center game content within its area */
+            }
+        }
+
+
+        /* Utility classes for alignment */
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Fixed header style */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100; /* Ensure it's above other content */
+        }
+
+        /* Range slider track color */
+        input[type="range"].range-green::-webkit-slider-runnable-track {
+            background: var(--stake-dark);
+            border-radius: 0.5rem;
+            height: 0.5rem;
+        }
+
+        input[type="range"].range-green::-webkit-slider-thumb {
+            background: var(--stake-green);
+            border: 2px solid var(--stake-text);
+            border-radius: 50%;
+            width: 1rem;
+            height: 1rem;
+            cursor: grab;
+            -webkit-appearance: none;
+            margin-top: -0.25rem; /* Center thumb vertically */
+            box-shadow: 0 0 5px var(--stake-green);
+        }
+
+        input[type="range"].range-green:focus::-webkit-slider-thumb {
+            box-shadow: 0 0 0 3px var(--neon-green-accent), 0 0 0 6px var(--stake-green);
+        }
+
+        /* Firefox */
+        input[type="range"].range-green::-moz-range-track {
+            background: var(--stake-dark);
+            border-radius: 0.5rem;
+            height: 0.5rem;
+        }
+
+        input[type="range"].range-green::-moz-range-thumb {
+            background: var(--stake-green);
+            border: 2px solid var(--stake-text);
+            border-radius: 50%;
+            width: 1rem;
+            height: 1rem;
+            cursor: grab;
+            box-shadow: 0 0 5px var(--stake-green);
+        }
+
+        /* Improved Bet Adjustment Buttons */
+        .bet-adjust-btn {
+            background-color: var(--stake-border); /* Darker gray for subtle contrast */
+            color: var(--stake-text);
+            padding: 0.5rem 0.75rem; /* Slightly more padding */
+            border-radius: 0.5rem; /* Rounded corners */
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid var(--stake-border); /* Subtle border */
+        }
+
+        .bet-adjust-btn:hover {
+            background-color: var(--stake-dark); /* Even darker on hover */
+            border-color: var(--stake-green); /* Green border on hover */
+            color: var(--stake-green);
+            box-shadow: 0 0 8px rgba(0, 230, 118, 0.3);
+        }
+
+        .bet-adjust-btn:active {
+            transform: translateY(1px);
+            box-shadow: none;
+        }
+
+        /* LOADER STYLE */
+        .loader {
+            width: 0;
+            height: 4.8px;
+            display: inline-block;
+            position: absolute; /* Changed to absolute to position within overlay */
+            bottom: 45%; /* Position relative to overlay center */
+            background: #54f98d;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            box-sizing: border-box;
+            animation: animFw 8s linear infinite;
+            left: 50%;
+            transform: translateX(-50%); /* Center the loader */
+        }
+
+        .loader::after,
+        .loader::before {
+            content: "";
+            width: 10px;
+            height: 1px;
+            background: #fff;
+            position: absolute;
+            top: 9px;
+            right: -2px;
+            opacity: 0;
+            transform: rotate(-45deg) translateX(0px);
+            box-sizing: border-box;
+            animation: coli1 0.3s linear infinite;
+        }
+
+        .loader::before {
+            top: -4px;
+            transform: rotate(45deg);
+            animation: coli2 0.3s linear infinite;
+        }
+
+        @keyframes animFw {
+            0% { width: 0; }
+            100% { width: 100%; }
+        }
+
+        @keyframes coli1 {
+            0% { transform: rotate(-45deg) translateX(0px); opacity: 0.7; }
+            100% { transform: rotate(-45deg) translateX(-45px); opacity: 0; }
+        }
+
+        @keyframes coli2 {
+            0% { transform: rotate(45deg) translateX(0px); opacity: 1; }
+            100% { transform: rotate(45deg) translateX(-45px); opacity: 0.7; }
+        }
+
+        /* Carousel specific styles */
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            border-radius: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 250px; /* Fixed height for consistency */
+            object-fit: cover;
+            border-radius: 1rem;
+        }
+
+        .carousel-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 0.75rem 0.5rem;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .carousel-button-prev {
+            left: 10px;
+        }
+
+        .carousel-button-next {
+            right: 10px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .carousel-dot {
+            width: 10px;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .carousel-dot.active {
+            background-color: var(--stake-green);
+            transform: scale(1.2);
+        }
+
+        /* Thimbles (Shell) Game specific styles */
+        .thimble-container {
+            display: flex; /* Use flex for initial spacing */
+            justify-content: center;
+            gap: 20px; /* Space between thimbles */
+            margin-top: 40px;
+            position: relative; /* For absolute positioning of thimbles and ball */
+            height: 150px; /* Sufficient height for lifting */
+            width: 100%; /* Take full width to distribute thimbles */
+            max-width: 400px; /* Max width for thimble area */
+            align-items: flex-end; /* Align to bottom for cup illusion */
+        }
+
+        .thimble {
+            width: 120px;
+            height: 100px;
+            position: absolute; /* Essential for precise animation */
+            top: 0; /* Aligned with container top for lifting effect */
+            cursor: pointer;
+            transition: left 0.3s ease-in-out, transform 0.2s ease-out; /* Transition for shuffle and lift */
+            z-index: 2; /* Ensure thimbles are above the ball */
+            will-change: left, transform; /* Optimize for animation */
+        }
+
+        .thimble img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* Ensure the image fits within the bounds */
+            /* Add some shadows and highlights for a 3D/glossy look */
+            filter: drop-shadow(0 5px 8px rgba(0,0,0,0.5)) /* Base shadow */
+                    drop-shadow(0 0 10px rgba(255,255,255,0.2) ) ; /* Subtle highlight */
+        }
+
+        .thimble.lifted img {
+            transform: translateY(-70px); /* Lift higher */
+            filter: drop-shadow(0 15px 20px rgba(0,0,0,0.7)) /* Deeper shadow when lifted */
+                    drop-shadow(0 0 20px rgba(255,255,255,0.4)); /* Brighter highlight */
+        }
+
+        /* State colors for the *container* or *overlay*, not the image itself, to avoid distorting image */
+        .thimble.correct img {
+            filter: drop-shadow(0 0 20px var(--stake-green)) drop-shadow(0 0 30px var(--neon-green-accent));
+        }
+
+        .thimble.incorrect img {
+            filter: drop-shadow(0 0 20px #DC2626) drop-shadow(0 0 30px #EF4444);
+        }
+
+        .thimble:hover {
+            transform: translateY(-8px); /* Lift slightly on hover */
+        }
+
+
+        .thimble-ball {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background-color: #FF0000; /* Red ball */
+            border-radius: 50%;
+            box-shadow: 0 0 15px #FF0000, 0 0 25px rgba(255, 0, 0, 0.7); /* Red glow */
+            z-index: 1; /* Behind the thimble */
+            opacity: 0; /* Hidden initially */
+            transition: opacity 0.3s ease-in-out; /* Only opacity transitions */
+            /* Initial position will be set by JS */
+        }
+
+        .thimble-ball.visible {
+            opacity: 1;
+        }
+
+        /* Confetti animation */
+        .confetti-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 4;
+        }
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #FFD700; /* Gold */
+            opacity: 0;
+            animation: fall linear forwards;
+            border-radius: 2px;
+        }
+        @keyframes fall {
+            0% { transform: translateY(0) rotateZ(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotateZ(720deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Transition Overlay -->
+    <div id="transition-overlay" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 hidden">
+        <h1 id="betiq-title-transition" class="text-6xl font-extrabold text-stake-green text-neon-glow-green opacity-0">BETIQ</h1>
+        <div id="app-loader" class="loader hidden"></div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="bg-gray-900 text-white p-4 shadow-lg flex justify-between items-center z-50">
+        <div class="flex items-center space-x-4">
+            <h1 class="text-3xl font-extrabold text-stake-green text-neon-glow-green cursor-pointer" id="logo-home">BETIQ</h1>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="relative">
+                <span class="text-sm text-gray-400">Balance:</span>
+                <span id="header-balance" class="text-2xl font-bold text-stake-green ml-2">
+                    NRs 0.00
+                </span>
+            </div>
+            <button id="redeem-code-btn" class="btn-sleek text-sm px-4 py-2">Redeem Code</button>
+            <button id="deposit-btn" class="btn-secondary-sleek text-sm px-4 py-2">Deposit</button>
+        </div>
+    </header>
+
+    <!-- Redeem Code Popup (Hidden by default) -->
+    <div id="redeem-popup" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 hidden">
+        <div class="bg-stake-card p-8 rounded-xl shadow-2xl border border-stake-border w-full max-w-md mx-4">
+            <h2 class="text-2xl font-bold mb-6 text-stake-green text-center">Redeem Code</h2>
+            <input type="text" id="redeem-input" placeholder="Enter your code"
+                   class="w-full p-3 mb-4 bg-stake-dark border border-stake-border rounded-lg text-stake-text focus:outline-none focus:ring-2 focus:ring-stake-green">
+            <div id="redeem-message" class="text-center text-sm mb-4"></div>
+            <button id="submit-redeem" class="btn-sleek w-full mb-3">Redeem</button>
+            <button id="close-redeem" class="btn-secondary-sleek w-full">Close</button>
+        </div>
+    </div>
+
+    <!-- Main Content Area - Dynamic Game Sections -->
+    <main class="flex-grow p-6">
+
+        <!-- Game Selection Overlay (Home Page) -->
+        <section id="game-selection-overlay" class="game-section active relative flex flex-col items-center justify-center">
+            <!-- Slideshow/Carousel Section -->
+            <section id="slideshow" class="w-full max-w-6xl mx-auto mb-8 carousel-container">
+                <div class="carousel-slides" id="carousel-slides">
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1200x250/00E676/FFFFFF?text=PROMO+GAME+1" alt="Promotional Game 1">
+                        <div class="carousel-caption">
+                            <h3 class="font-bold text-lg">Exciting New Games!</h3>
+                            <p class="text-sm">Explore our latest additions and win big.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1200x250/00C853/FFFFFF?text=PROMO+BONUS+2" alt="Promotional Bonus 2">
+                        <div class="carousel-caption">
+                            <h3 class="font-bold text-lg">Daily Bonuses Await!</h3>
+                            <p class="text-sm">Log in every day for amazing rewards.</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://placehold.co/1200x250/69F0AE/1A2227?text=PROMO+EVENT+3" alt="Promotional Event 3">
+                        <div class="carousel-caption">
+                            <h3 class="font-bold text-lg">Join Our Tournaments!</h3>
+                            <p class="text-sm">Compete with players worldwide and climb the leaderboard.</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="carousel-button carousel-button-prev" aria-label="Previous slide">◀</button>
+                <button class="carousel-button carousel-button-next" aria-label="Next slide">▶</button>
+                <div class="carousel-dots" id="carousel-dots"></div>
+            </section>
+            <h2 class="text-3xl font-bold mb-8 text-center text-stake-text">Trending Games</h2>
+            <div class="trending-games-container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 w-full max-w-6xl">
+                <!-- Mines Game Card -->
+                <div class="game-card game-icon" data-game-type="mines">
+                    <img src="https://placehold.co/400x250/00E676/FFFFFF?text=MINES" alt="Mines Game" class="game-card-image">
+                    <div class="p-4">
+                        <h3 class="game-card-title">Mines</h3>
+                        <p class="game-card-description">Uncover safe squares and avoid the mines.</p>
+                    </div>
+                </div>
+
+                <!-- Plinko Game Card -->
+                <div class="game-card game-icon" data-game-type="plinko">
+                    <img src="https://placehold.co/400x250/00E676/FFFFFF?text=PLINKO" alt="Plinko Game" class="game-card-image">
+                    <div class="p-4">
+                        <h3 class="game-card-title">Plinko</h3>
+                        <p class="game-card-description">Drop a ball and watch it fall to win big.</p>
+                    </div>
+                </div>
+
+                <!-- Aviator Game Card -->
+                <div class="game-card game-icon" data-game-type="aviator">
+                    <img src="https://placehold.co/400x250/00E676/FFFFFF?text=AVIATOR" alt="Aviator Game" class="game-card-image">
+                    <div class="p-4">
+                        <h3 class="game-card-title">Aviator</h3>
+                        <p class="game-card-description">Cash out before the plane flies away.</p>
+                    </div>
+                </div>
+
+                <!-- Thimbles Game Card -->
+                <div class="game-card game-icon" data-game-type="thimbles">
+                    <img src="https://placehold.co/400x250/00E676/FFFFFF?text=THIMBLES" alt="Thimbles Game" class="game-card-image">
+                    <div class="p-4">
+                        <h3 class="game-card-title">Thimbles</h3>
+                        <p class="game-card-description">Find the hidden ball under the cups.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Aviator Game Container -->
+        <section id="aviator-game-container" class="game-section bg-stake-card p-8 rounded-lg shadow-xl border border-stake-border">
+            <!-- Left Column: Controls and Back Button -->
+            <div class="game-controls-wrapper w-full md:w-1/3 bg-stake-dark p-6 rounded-lg mb-6 md:mb-0 border border-stake-border flex flex-col items-start">
+                <button class="btn-secondary-sleek text-sm px-4 py-2 mb-4" onclick="showGameType('home')">← Back</button>
+                <label for="bet-amount-slider-aviator" class="block text-gray-400 text-sm font-semibold mb-2">Bet Amount</label>
+                <div class="flex items-center space-x-3">
+                    <span class="text-stake-green font-bold text-lg" id="bet-amount-value-aviator">NRs 1.00</span>
+                    <input type="range" id="bet-amount-slider-aviator" min="0.1" max="100" value="1" step="0.1"
+                           class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                </div>
+                <input type="number" id="manual-bet-input-aviator" min="0.1" step="0.1" value="1.00"
+                       class="w-full p-2 mt-3 bg-stake-card border border-stake-border rounded-md text-stake-text focus:outline-none focus:ring-2 focus:ring-stake-green">
+                <div class="flex justify-between mt-2">
+                    <button class="bet-adjust-btn" onclick="adjustBet(1, 'aviator')">+1</button>
+                    <button class="bet-adjust-btn" onclick="adjustBet(0.1, 'aviator')">+0.1</button>
+                    <button class="bet-adjust-btn" onclick="multiplyBet(0.5, 'aviator')">1/2</button>
+                    <button class="bet-adjust-btn" onclick="multiplyBet(2, 'aviator')">x2</button>
+                </div>
+                <button id="start-aviator-game" class="btn-sleek w-full mt-4">Start Round</button>
+            </div>
+
+            <!-- Main Game Area for Aviator (Right Column on Desktop) -->
+            <div class="game-main-area flex-grow w-full md:w-2/3 md:ml-4 flex flex-col items-center">
+                <h2 class="text-3xl font-bold text-stake-green text-neon-glow-green text-center mb-6">Aviator</h2>
+                <!-- Aviator Game Area -->
+                <div class="w-full max-w-lg aspect-video bg-gray-800 rounded-lg flex-center relative overflow-hidden mb-6" style="height: 300px; width: 500px;">
+                    <canvas id="aviator-canvas" class="w-full h-full"></canvas>
+                    <div id="multiplier-display" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-6xl font-extrabold text-stake-green text-neon-glow-green hidden">1.00x</div>
+                </div>
+                <div id="aviator-game-message" class="text-lg font-semibold text-center text-stake-text mt-4"></div>
+                <button id="cash-out-aviator" class="btn-sleek mt-4 hidden">Cash Out</button>
+
+                <!-- Game History for Aviator -->
+                <div class="w-full mt-8">
+                    <h3 class="text-xl font-bold text-stake-green mb-4">Game History</h3>
+                    <div id="aviator-history" class="bg-stake-dark p-4 rounded-lg border border-stake-border max-h-48 overflow-y-auto">
+                        <!-- History entries will be appended here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mines Game Container -->
+        <section id="mines-game-container" class="game-section bg-stake-card p-8 rounded-lg shadow-xl border border-stake-border">
+            <!-- Left Column: Controls and Back Button -->
+            <div class="game-controls-wrapper w-full md:w-1/3 bg-stake-dark p-6 rounded-lg mb-6 md:mb-0 border border-stake-border flex flex-col items-start">
+                <button class="btn-secondary-sleek text-sm px-4 py-2 mb-4" onclick="showGameType('home')">← Back</button>
+                <div class="flex flex-col w-full">
+                    <label for="bet-amount-slider-mines" class="block text-gray-400 text-sm font-semibold mb-2">Bet Amount</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-stake-green font-bold text-lg" id="bet-amount-value-mines">NRs 1.00</span>
+                        <input type="range" id="bet-amount-slider-mines" min="0.1" max="100" value="1" step="0.1"
+                               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                    </div>
+                    <input type="number" id="manual-bet-input-mines" min="0.1" step="0.1" value="1.00"
+                           class="w-full p-2 mt-3 bg-stake-card border border-stake-border rounded-md text-stake-text focus:outline-none focus:ring-2 focus:ring-stake-green">
+                    <div class="flex justify-between mt-2">
+                        <button class="bet-adjust-btn" onclick="adjustBet(1, 'mines')">+1</button>
+                        <button class="bet-adjust-btn" onclick="adjustBet(0.1, 'mines')">+0.1</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(0.5, 'mines')">1/2</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(2, 'mines')">x2</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col w-full mt-6">
+                    <label for="mines-count-slider" class="block text-gray-400 text-sm font-semibold mb-2">Mines Count</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-stake-green font-bold text-lg" id="mines-count-value">3</span>
+                        <input type="range" id="mines-count-slider" min="2" max="24" value="3" step="1"
+                               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                    </div>
+                </div>
+                <button id="start-game-mines" class="btn-sleek w-full mt-6">Start Game</button>
+            </div>
+
+            <!-- Right Column: Game Title, Game Area, Message, History -->
+            <div class="game-main-area flex-grow w-full md:w-2/3 md:ml-4 flex flex-col items-center">
+                <h2 class="text-3xl font-bold text-stake-green text-neon-glow-green text-center mb-6">Mines</h2>
+                <!-- Mines Grid and Game Message -->
+                <div id="mines-grid-container" class="grid grid-cols-5 gap-2 mb-6">
+                    <!-- Cells will be dynamically generated here -->
+                </div>
+                <div id="mines-game-message" class="text-lg font-semibold text-center text-stake-text mt-4"></div>
+                <button id="cash-out-mines" class="btn-sleek mt-4 hidden">Cash Out</button>
+
+                <!-- Game History for Mines -->
+                <div class="w-full mt-8">
+                    <h3 class="text-xl font-bold text-stake-green mb-4">Game History</h3>
+                    <div id="mines-history" class="bg-stake-dark p-4 rounded-lg border border-stake-border max-h-48 overflow-y-auto">
+                        <!-- History entries will be appended here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Plinko Game Container -->
+        <section id="plinko-game-container" class="game-section bg-stake-card p-8 rounded-lg shadow-xl border border-stake-border">
+            <!-- Left Column: Controls and Back Button -->
+            <div class="game-controls-wrapper w-full md:w-1/3 bg-stake-dark p-6 rounded-lg mb-6 md:mb-0 border border-stake-border flex flex-col items-start">
+                <button class="btn-secondary-sleek text-sm px-4 py-2 mb-4" onclick="showGameType('home')">← Back</button>
+                <div class="flex flex-col w-full">
+                    <label for="bet-amount-slider-plinko" class="block text-gray-400 text-sm font-semibold mb-2">Bet Amount</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-stake-green font-bold text-lg" id="bet-amount-value-plinko">NRs 1.00</span>
+                        <input type="range" id="bet-amount-slider-plinko" min="0.1" max="100" value="1" step="0.1"
+                               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                    </div>
+                    <input type="number" id="manual-bet-input-plinko" min="0.1" step="0.1" value="1.00"
+                           class="w-full p-2 mt-3 bg-stake-card border border-stake-border rounded-md text-stake-text focus:outline-none focus:ring-2 focus:ring-stake-green">
+                    <div class="flex justify-between mt-2">
+                        <button class="bet-adjust-btn" onclick="adjustBet(1, 'plinko')">+1</button>
+                        <button class="bet-adjust-btn" onclick="adjustBet(0.1, 'plinko')">+0.1</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(0.5, 'plinko')">1/2</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(2, 'plinko')">x2</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-col w-full mt-6">
+                    <label for="plinko-risk-slider" class="block text-gray-400 text-sm font-semibold mb-2">Risk Level</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-stake-green font-bold text-lg" id="plinko-risk-value">Low</span>
+                        <input type="range" id="plinko-risk-slider" min="0" max="2" value="0" step="1"
+                               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                    </div>
+                </div>
+                <button id="drop-ball-plinko" class="btn-sleek w-full mt-6">Drop Ball</button>
+            </div>
+
+            <!-- Main Game Area for Plinko (Right Column on Desktop) -->
+            <div class="game-main-area flex-grow w-full md:w-2/3 md:ml-4 flex flex-col items-center">
+                <h2 class="text-3xl font-bold text-stake-green text-neon-glow-green text-center mb-6">Plinko</h2>
+                <!-- Plinko Board Placeholder -->
+                <div id="plinko-board" class="w-full max-w-lg aspect-square bg-gray-800 rounded-lg flex-center relative overflow-hidden mb-6" style="height: 400px; width: 400px;">
+                    <canvas id="plinko-canvas" class="w-full h-full"></canvas>
+                </div>
+                <div id="plinko-game-message" class="text-lg font-semibold text-center text-stake-text mt-4"></div>
+
+                <!-- Game History for Plinko -->
+                <div class="w-full mt-8">
+                    <h3 class="text-xl font-bold text-stake-green mb-4">Game History</h3>
+                    <div id="plinko-history" class="bg-stake-dark p-4 rounded-lg border border-stake-border max-h-48 overflow-y-auto">
+                        <!-- History entries will be appended here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thimbles Game Container (Formerly Shell Game) -->
+        <section id="thimbles-game-container" class="game-section bg-stake-card p-8 rounded-lg shadow-xl border border-stake-border">
+            <!-- Left Column: Controls and Back Button -->
+            <div class="game-controls-wrapper w-full md:w-1/3 bg-stake-dark p-6 rounded-lg mb-6 md:mb-0 border border-stake-border flex flex-col items-start">
+                <button class="btn-secondary-sleek text-sm px-4 py-2 mb-4" onclick="showGameType('home')">← Back</button>
+                <div class="flex flex-col w-full">
+                    <label for="bet-amount-thimbles" class="block text-gray-400 text-sm font-semibold mb-2">Bet Amount</label>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-stake-green font-bold text-lg" id="bet-amount-value-thimbles">NRs 1.00</span>
+                        <input type="range" id="bet-amount-slider-thimbles" min="0.1" max="100" value="1" step="0.1"
+                               class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-green">
+                    </div>
+                    <input type="number" id="manual-bet-input-thimbles" min="0.1" step="0.1" value="1.00"
+                           class="w-full p-2 mt-3 bg-stake-card border border-stake-border rounded-md text-stake-text focus:outline-none focus:ring-2 focus:ring-stake-green">
+                    <div class="flex justify-between mt-2">
+                        <button class="bet-adjust-btn" onclick="adjustBet(1, 'thimbles')">+1</button>
+                        <button class="bet-adjust-btn" onclick="adjustBet(0.1, 'thimbles')">+0.1</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(0.5, 'thimbles')">1/2</button>
+                        <button class="bet-adjust-btn" onclick="multiplyBet(2, 'thimbles')">x2</button>
+                    </div>
+                </div>
+                <button id="start-game-thimbles" class="btn-sleek w-full mt-6">Start Game</button>
+            </div>
+
+            <!-- Right Column: Game Title, Game Area, Message, History -->
+            <div class="game-main-area flex-grow w-full md:w-2/3 md:ml-4 flex flex-col items-center">
+                <h2 class="text-3xl font-bold text-stake-green text-neon-glow-green text-center mb-6">Thimbles</h2>
+                <div id="thimbles-game-message" class="text-lg font-semibold text-center text-stake-text mt-4">Place your bet and click start.</div>
+                <div id="thimble-container" class="thimble-container">
+                    <!-- Thimble elements will be dynamically positioned by JS -->
+                    <!-- Each thimble is now an <img> tag for the cup image -->
+                    <div class="thimble" data-index="0">
+                        <img src="uploaded:{DA0F4891-DE12-4376-B587-41E100D43432}.png-769bf562-f1cf-4f8c-87a5-229e553021d2" alt="Cup 1">
+                    </div>
+                    <div class="thimble" data-index="1">
+                        <img src="uploaded:{DA0F4891-DE12-4376-B587-41E100D43432}.png-769bf562-f1cf-4f8c-87a5-229e553021d2" alt="Cup 2">
+                    </div>
+                    <div class="thimble" data-index="2">
+                        <img src="uploaded:{DA0F4891-DE12-4376-B587-41E100D43432}.png-769bf562-f1cf-4f8c-87a5-229e553021d2" alt="Cup 3">
+                    </div>
+                    <div id="thimble-ball-visualization" class="thimble-ball"></div> <!-- Ball now inside container -->
+                </div>
+                <button id="reset-thimbles-game" class="btn-secondary-sleek mt-4 hidden">Play Again</button>
+                <div id="confetti-container" class="confetti-container"></div>
+                <!-- Game History for Thimbles -->
+                <div class="w-full mt-8">
+                    <h3 class="text-xl font-bold text-stake-green mb-4">Game History</h3>
+                    <div id="thimbles-history" class="bg-stake-dark p-4 rounded-lg border border-stake-border max-h-48 overflow-y-auto">
+                        <!-- History entries will be appended here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-400 p-4 text-center text-sm shadow-inner mt-auto">
+        &copy; 2024 Betiq. All rights reserved.
+    </footer>
+
+    <script>
+        // --- Global Variables and Constants ---
+        const CURRENCY_SYMBOL = 'NRs';
+        let currentBalance = 1000.00;
+        let usedRedeemCodes = [];
+
+        // DOM Elements (Header and Redeem related)
+        const headerBalance = document.getElementById('header-balance');
+        const redeemPopup = document.getElementById('redeem-popup');
+        const redeemInput = document.getElementById('redeem-input');
+        const redeemMessage = document.getElementById('redeem-message');
+        const redeemCodeBtn = document.getElementById('redeem-code-btn');
+        const submitRedeemBtn = document.getElementById('submit-redeem');
+        const closeRedeemBtn = document.getElementById('close-redeem');
+        const logoHomeBtn = document.getElementById('logo-home');
+
+        // Transition Elements
+        const transitionOverlay = document.getElementById('transition-overlay');
+        const betiqTitleTransition = document.getElementById('betiq-title-transition');
+        const appLoader = document.getElementById('app-loader'); // New loader element
+
+        // Game Section Containers
+        const gameSelectionOverlay = document.getElementById('game-selection-overlay');
+        const aviatorGameContainer = document.getElementById('aviator-game-container');
+        const minesGameContainer = document.getElementById('mines-game-container');
+        const plinkoGameContainer = document.getElementById('plinko-game-container');
+        const thimblesGameContainer = document.getElementById('thimbles-game-container'); // Renamed from shellGameContainer
+
+        const allGameSections = document.querySelectorAll('.game-section');
+        const gameIcons = document.querySelectorAll('.game-icon');
+
+        // Carousel Elements
+        const carouselSlidesContainer = document.getElementById('carousel-slides');
+        const carouselPrevBtn = document.querySelector('.carousel-button-prev');
+        const carouselNextBtn = document.querySelector('.carousel-button-next');
+        const carouselDotsContainer = document.getElementById('carousel-dots');
+        let currentSlideIndex = 0;
+        let totalSlides = 0;
+        let carouselInterval;
+        const SLIDE_TRANSITION_INTERVAL = 3000; // 3 seconds
+
+        // --- Game Specific Variables ---
+
+        // Aviator Game variables
+        let aviatorBetAmount = 1.00;
+        let currentMultiplier = 1.00;
+        let aviatorGameActive = false;
+        let aviatorAnimationId = null;
+        let aviatorGameHistory = [];
+        let aviatorCashoutHistory = []; // Tracks last 5 cashout multipliers for timing player detection
+        let aviatorGameCount = 0; // Total games played for timing player detection
+
+        const aviatorCanvas = document.getElementById('aviator-canvas');
+        const aviatorCtx = aviatorCanvas.getContext('2d');
+        const multiplierDisplay = document.getElementById('multiplier-display');
+        const aviatorGameMessage = document.getElementById('aviator-game-message');
+        const cashOutAviatorBtn = document.getElementById('cash-out-aviator');
+
+        const betAmountSliderAviator = document.getElementById('bet-amount-slider-aviator');
+        const manualBetInputAviator = document.getElementById('manual-bet-input-aviator');
+        const betAmountValueAviator = document.getElementById('bet-amount-value-aviator');
+        const startAviatorGameBtn = document.getElementById('start-aviator-game');
+        const aviatorHistoryDiv = document.getElementById('aviator-history');
+
+        let aviatorCrashSound;
+        try { aviatorCrashSound = new Audio('crash.mp3'); } catch (e) { console.error('Error loading crash.mp3:', e); aviatorCrashSound = { play: () => {} }; }
+
+        // Mines Game variables
+        let minesSelectedCount = 3;
+        let minesGrid = []; // Stores objects { element: DOMNode, hasMine: boolean, revealed: boolean }
+        let minesRevealedCount = 0;
+        let minesGameActive = false;
+        let minesBetAmount = 1.00;
+        let minesProfitMultiplier = 1.00;
+        let minesGameHistory = [];
+        let minesConsecutiveCashouts = 0; // For "Force Loss After X Wins"
+        let minesClickCount = 0; // For "More Mines -> Lower Safe Probability"
+        let minesCornerAvoidCount = 0; // For "Predict Repeated Patterns" (simplified)
+
+        const minesGridContainer = document.getElementById('mines-grid-container');
+        const minesGameMessage = document.getElementById('mines-game-message');
+        const cashOutMinesBtn = document.getElementById('cash-out-mines');
+
+        const betAmountSliderMines = document.getElementById('bet-amount-slider-mines');
+        const manualBetInputMines = document.getElementById('manual-bet-input-mines');
+        const betAmountValueMines = document.getElementById('bet-amount-value-mines');
+        const minesCountSlider = document.getElementById('mines-count-slider');
+        const minesCountValue = document.getElementById('mines-count-value');
+        const startGameMinesBtn = document.getElementById('start-game-mines');
+        const minesHistoryDiv = document.getElementById('mines-history');
+
+        let mineSafeSound;
+        let mineLoseSound;
+        try { mineSafeSound = new Audio('safe.mp3'); } catch (e) { console.error('Error loading safe.mp3:', e); mineSafeSound = { play: () => {} }; }
+        try { mineLoseSound = new Audio('lose.mp3'); } catch (e) { console.error('Error loading lose.mp3:', e); mineLoseSound = { play: () => {} }; }
+
+        // Plinko Game variables
+        let plinkoSelectedRisk = 0; // 0: Low, 1: Medium, 2: High
+        let plinkoBetAmount = 1.00;
+        let plinkoGameHistory = [];
+        let plinkoHighWinCount = 0; // For "Win Suppression on Repeats"
+        let plinkoGamesSinceHighWinCountCheck = 0; // For "Win Suppression on Repeats"
+        let plinkoSuppressionActive = false; // Flag for suppression
+        let plinkoSuppressionGamesLeft = 0; // Counter for suppression games
+
+        const PLINKO_LOW_WEIGHTS = [1.5, 2.0, 2.5, 3.0, 4.0, 3.0, 2.5, 2.0, 1.5]; // edge slots are less likely
+        const PLINKO_MEDIUM_WEIGHTS = [1.0, 1.5, 2.0, 2.5, 3.5, 2.5, 2.0, 1.5, 1.0, 0.8, 0.6, 0.4, 0.2];
+        const PLINKO_HIGH_WEIGHTS = [0.1, 0.2, 0.3, 0.5, 0.8, 1.2, 2.0, 3.0, 5.0, 3.0, 2.0, 1.2, 0.8, 0.5, 0.3, 0.2, 0.1, 0.0];
+
+
+        const plinkoCanvas = document.getElementById('plinko-canvas');
+        const plinkoCtx = plinkoCanvas.getContext('2d');
+        const plinkoGameMessage = document.getElementById('plinko-game-message');
+
+        const betAmountSliderPlinko = document.getElementById('bet-amount-slider-plinko');
+        const manualBetInputPlinko = document.getElementById('manual-bet-input-plinko');
+        const betAmountValuePlinko = document.getElementById('bet-amount-value-plinko');
+        const plinkoRiskSlider = document.getElementById('plinko-risk-slider');
+        const plinkoRiskValue = document.getElementById('plinko-risk-value');
+        const dropBallPlinkoBtn = document.getElementById('drop-ball-plinko');
+        const plinkoHistoryDiv = document.getElementById('plinko-history');
+
+        const PLINKO_ROWS = 12;
+        const PLINKO_PEG_RADIUS = 3;
+        const PLINKO_BALL_RADIUS = 7;
+        const PLINKO_LOW_MULTIPLIERS = [0.5, 0.8, 1.0, 1.2, 1.5, 1.2, 1.0, 0.8, 0.5];
+        const PLINKO_MEDIUM_MULTIPLIERS = [0.2, 0.4, 0.6, 0.9, 1.3, 1.8, 2.5, 1.8, 1.3, 0.9, 0.6, 0.4, 0.2];
+        const PLINKO_HIGH_MULTIPLIERS = [0.0, 0.1, 0.2, 0.3, 0.5, 0.8, 1.2, 2.0, 5.0, 2.0, 1.2, 0.8, 0.5, 0.3, 0.2, 0.1, 0.0];
+
+        let plinkoBall = { x: 0, y: 0, vx: 0, vy: 0 };
+        let plinkoPegs = [];
+        let plinkoAnimationFrameId;
+        let plinkoTargetBinIndex = -1; // New: stores the predetermined target bin
+
+        let plinkoHitSound;
+        try { plinkoHitSound = new Audio('plink.mp3'); } catch (e) { console.error('Error loading plink.mp3:', e); plinkoHitSound = { play: () => {} }; }
+
+        // Thimbles Game variables (formerly Shell Game)
+        let thimblesBetAmount = 1.00;
+        let thimblesBallPosition = 0; // Index of the thimble containing the ball (0, 1, or 2)
+        let thimblesGameActive = false;
+        let thimblesAnimating = false;
+        let thimblesGameHistory = [];
+        let thimblesConsecutiveWins = 0; // For "Bias Toward Wrong Picks"
+        let thimblesFavoriteThimble = null; // Stores index of most picked winning thimble
+        let thimblesPickCounts = [0, 0, 0]; // Track how many times each thimble was picked
+        let thimblesUserWinPattern = []; // Track user's winning thimble choices (last 3) for "Memory Trap"
+
+        const thimblesGameMessage = document.getElementById('thimbles-game-message');
+        // Get all thimble DIV elements that wrap the images
+        const thimbleElements = document.querySelectorAll('.thimble');
+        const thimbleBallVisualization = document.getElementById('thimble-ball-visualization');
+        const startGameThimblesBtn = document.getElementById('start-game-thimbles');
+        const resetThimblesGameBtn = document.getElementById('reset-thimbles-game');
+        const confettiContainer = document.getElementById('confetti-container');
+        const thimbleContainer = document.getElementById('thimble-container');
+
+
+        const betAmountSliderThimbles = document.getElementById('bet-amount-slider-thimbles');
+        const manualBetInputThimbles = document.getElementById('manual-bet-input-thimbles');
+        const betAmountValueThimbles = document.getElementById('bet-amount-value-thimbles');
+        const thimblesHistoryDiv = document.getElementById('thimbles-history');
+
+        let thimblesWinSound;
+        let thimblesLoseSound;
+        try { thimblesWinSound = new Audio('win.mp3'); } catch (e) { console.error('Error loading win.mp3:', e); thimblesWinSound = { play: () => {} }; }
+        try { thimblesLoseSound = new Audio('lose.mp3'); } catch (e) { console.error('Error loading lose.mp3:', e); thimblesLoseSound = { play: () => {} }; }
+
+
+        // --- Helper Functions (Universal) ---
+
+        /**
+         * Animates the balance display smoothly.
+         * @param {number} newBalance The target balance to animate to.
+         */
+        function animateBalance(newBalance) {
+            const startBalance = parseFloat(headerBalance.textContent.replace(CURRENCY_SYMBOL + ' ', ''));
+            const duration = 500; // milliseconds
+            const startTime = performance.now();
+
+            function updateBalance(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                const progress = Math.min(elapsedTime / duration, 1);
+                const animatedBalance = startBalance + (newBalance - startBalance) * progress;
+                headerBalance.textContent = `${CURRENCY_SYMBOL} ${animatedBalance.toFixed(2)}`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(updateBalance);
+                } else {
+                    headerBalance.textContent = `${CURRENCY_SYMBOL} ${newBalance.toFixed(2)}`;
+                    currentBalance = newBalance;
+                    saveGameState();
+                }
+            }
+            requestAnimationFrame(updateBalance);
+        }
+
+        /**
+         * Updates the bet amount display for a specific game.
+         * @param {string} gameType The type of game ('aviator', 'mines', 'plinko', 'thimbles').
+         */
+        function updateBetDisplay(gameType) {
+            const slider = document.getElementById(`bet-amount-slider-${gameType}`);
+            const input = document.getElementById(`manual-bet-input-${gameType}`);
+            const valueDisplay = document.getElementById(`bet-amount-value-${gameType}`);
+
+            let betAmount;
+            if (gameType === 'aviator') {
+                aviatorBetAmount = parseFloat(slider.value);
+                betAmount = aviatorBetAmount;
+            } else if (gameType === 'mines') {
+                minesBetAmount = parseFloat(slider.value);
+                betAmount = minesBetAmount;
+            } else if (gameType === 'plinko') {
+                plinkoBetAmount = parseFloat(slider.value);
+                betAmount = plinkoBetAmount;
+            } else if (gameType === 'thimbles') { // Renamed from shell
+                thimblesBetAmount = parseFloat(slider.value);
+                betAmount = thimblesBetAmount;
+            }
+
+            input.value = betAmount.toFixed(2);
+            valueDisplay.textContent = `${CURRENCY_SYMBOL} ${betAmount.toFixed(2)}`;
+        }
+
+        /**
+         * Adjusts the bet amount by a fixed value.
+         * @param {number} amount The amount to add or subtract.
+         * @param {string} gameType The type of game.
+         */
+        function adjustBet(amount, gameType) {
+            const slider = document.getElementById(`bet-amount-slider-${gameType}`);
+            let newBet = parseFloat(slider.value) + amount;
+            newBet = Math.max(0.1, Math.min(100, newBet)); // Ensure it stays within min/max
+            slider.value = newBet.toFixed(1);
+            updateBetDisplay(gameType);
+        }
+
+        /**
+         * Multiplies the current bet amount by a factor.
+         * @param {number} factor The factor to multiply by (e.g., 0.5 for half, 2 for double).
+         * @param {string} gameType The type of game.
+         */
+        function multiplyBet(factor, gameType) {
+            const slider = document.getElementById(`bet-amount-slider-${gameType}`);
+            let newBet = parseFloat(slider.value) * factor;
+            newBet = Math.max(0.1, Math.min(100, newBet));
+            slider.value = newBet.toFixed(1);
+            updateBetDisplay(gameType);
+        }
+
+        // --- Save/Load Game State (Local Storage) ---
+        function saveGameState() {
+            localStorage.setItem('currentBalance', currentBalance.toFixed(2));
+            localStorage.setItem('usedRedeemCodes', JSON.stringify(usedRedeemCodes));
+            localStorage.setItem('aviatorHistory', JSON.stringify(aviatorGameHistory));
+            localStorage.setItem('minesHistory', JSON.stringify(minesGameHistory));
+            localStorage.setItem('plinkoHistory', JSON.stringify(plinkoGameHistory));
+            localStorage.setItem('thimblesHistory', JSON.stringify(thimblesGameHistory)); // Renamed from shellHistory
+            // Save additional game state variables
+            localStorage.setItem('minesConsecutiveCashouts', minesConsecutiveCashouts);
+            localStorage.setItem('plinkoHighWinCount', plinkoHighWinCount);
+            localStorage.setItem('plinkoGamesSinceHighWinCountCheck', plinkoGamesSinceHighWinCountCheck);
+            localStorage.setItem('thimblesConsecutiveWins', thimblesConsecutiveWins); // Renamed
+            localStorage.setItem('thimblesFavoriteThimble', thimblesFavoriteThimble); // Renamed
+            localStorage.setItem('thimblesPickCounts', JSON.stringify(thimblesPickCounts)); // Renamed
+            localStorage.setItem('thimblesUserWinPattern', JSON.stringify(thimblesUserWinPattern)); // Renamed
+            localStorage.setItem('aviatorCashoutHistory', JSON.stringify(aviatorCashoutHistory));
+            localStorage.setItem('aviatorGameCount', aviatorGameCount);
+        }
+
+        function loadGameState() {
+            const savedBalance = localStorage.getItem('currentBalance');
+            if (savedBalance !== null) {
+                currentBalance = parseFloat(savedBalance);
+            }
+            const savedCodes = localStorage.getItem('usedRedeemCodes');
+            if (savedCodes) {
+                usedRedeemCodes = JSON.parse(savedCodes);
+            }
+            const savedAviatorHistory = localStorage.getItem('aviatorHistory');
+            if (savedAviatorHistory) {
+                aviatorGameHistory = JSON.parse(savedAviatorHistory);
+            }
+            const savedMinesHistory = localStorage.getItem('minesHistory');
+            if (savedMinesHistory) {
+                minesGameHistory = JSON.parse(savedMinesHistory);
+            }
+            const savedPlinkoHistory = localStorage.getItem('plinkoHistory');
+            if (savedPlinkoHistory) {
+                plinkoGameHistory = JSON.parse(savedPlinkoHistory);
+            }
+            const savedThimblesHistory = localStorage.getItem('thimblesHistory'); // Renamed
+            if (savedThimblesHistory) {
+                thimblesGameHistory = JSON.parse(savedThimblesHistory);
+            }
+
+            // Load additional game state variables
+            minesConsecutiveCashouts = parseInt(localStorage.getItem('minesConsecutiveCashouts') || '0');
+            plinkoHighWinCount = parseInt(localStorage.getItem('plinkoHighWinCount') || '0');
+            plinkoGamesSinceHighWinCountCheck = parseInt(localStorage.getItem('plinkoGamesSinceHighWinCountCheck') || '0');
+            thimblesConsecutiveWins = parseInt(localStorage.getItem('thimblesConsecutiveWins') || '0'); // Renamed
+            thimblesFavoriteThimble = localStorage.getItem('thimblesFavoriteThimble') ? parseInt(localStorage.getItem('thimblesFavoriteThimble')) : null; // Renamed
+            thimblesPickCounts = localStorage.getItem('thimblesPickCounts') ? JSON.parse(localStorage.getItem('thimblesPickCounts')) : [0, 0, 0]; // Renamed
+            thimblesUserWinPattern = localStorage.getItem('thimblesUserWinPattern') ? JSON.parse(localStorage.getItem('thimblesUserWinPattern')) : []; // Renamed
+            aviatorCashoutHistory = localStorage.getItem('aviatorCashoutHistory') ? JSON.parse(localStorage.getItem('aviatorCashoutHistory')) : [];
+            aviatorGameCount = parseInt(localStorage.getItem('aviatorGameCount') || '0');
+        }
+
+        /**
+         * Renders the game history for a specific game.
+         * @param {HTMLElement} historyDiv The DOM element to render history into.
+         * @param {Array<Object>} historyArray The array of history entries.
+         */
+        function renderHistory(historyDiv, historyArray) {
+            historyDiv.innerHTML = '';
+            if (historyArray.length === 0) {
+                historyDiv.innerHTML = '<p class="text-gray-500 text-center">No game history yet.</p>';
+                return;
+            }
+            historyArray.forEach(entry => {
+                const p = document.createElement('p');
+                p.className = `text-sm ${entry.win ? 'text-stake-green' : 'text-red-500'}`;
+                p.textContent = `${entry.timestamp}: Bet ${CURRENCY_SYMBOL}${entry.bet.toFixed(2)}, Result: ${entry.win ? 'Win' : 'Loss'}, Payout: ${CURRENCY_SYMBOL}${entry.payout.toFixed(2)}`;
+                historyDiv.appendChild(p);
+            });
+            historyDiv.scrollTop = historyDiv.scrollHeight; // Scroll to bottom
+        }
+
+        /**
+         * Records a game entry into the history for a specific game.
+         * @param {string} gameType The type of game ('aviator', 'mines', 'plinko', 'thimbles').
+         * @param {number} bet The bet amount.
+         * @param {number} payout The payout amount.
+         * @param {boolean} win Whether the game was a win.
+         * @param {number} [pickedIndex] For games like Thimbles, the index picked by user.
+         */
+        function recordGameHistory(gameType, bet, payout, win, pickedIndex = null) {
+            const entry = {
+                game: gameType,
+                bet: bet,
+                payout: payout,
+                win: win,
+                timestamp: new Date().toLocaleTimeString(),
+            };
+
+            if (pickedIndex !== null) {
+                entry.pickedIndex = pickedIndex;
+            }
+
+            let historyArray;
+            let historyDiv;
+
+            if (gameType === 'aviator') {
+                historyArray = aviatorGameHistory;
+                historyDiv = aviatorHistoryDiv;
+                // Update aviator specific stats
+                if (win) {
+                    aviatorCashoutHistory.push(payout / bet);
+                    if (aviatorCashoutHistory.length > 5) aviatorCashoutHistory.shift();
+                }
+                aviatorGameCount++;
+            } else if (gameType === 'mines') {
+                historyArray = minesGameHistory;
+                historyDiv = minesHistoryDiv;
+                // Update mines specific stats
+                if (win && payout / bet >= 3) {
+                    minesConsecutiveCashouts++;
+                } else {
+                    minesConsecutiveCashouts = 0;
+                }
+            } else if (gameType === 'plinko') {
+                historyArray = plinkoGameHistory;
+                historyDiv = plinkoHistoryDiv;
+                // Update plinko specific stats
+                plinkoGamesSinceHighWinCountCheck++;
+                if (win && payout / bet > 4) {
+                    plinkoHighWinCount++;
+                }
+            } else if (gameType === 'thimbles') { // Renamed from shell
+                historyArray = thimblesGameHistory;
+                historyDiv = thimblesHistoryDiv;
+                // Update thimbles specific stats
+                if (win) {
+                    thimblesConsecutiveWins++;
+                    thimblesUserWinPattern.push(pickedIndex); // Use the passed pickedIndex
+                    if (thimblesUserWinPattern.length > 3) thimblesUserWinPattern.shift(); // Keep last 3 winning picks
+                } else {
+                    thimblesConsecutiveWins = 0;
+                    thimblesUserWinPattern = [];
+                }
+            } else {
+                return; // Invalid game type
+            }
+
+            historyArray.unshift(entry); // Add to the beginning
+            if (historyArray.length > 10) historyArray.pop(); // Keep last 10
+            renderHistory(historyDiv, historyArray);
+            saveGameState();
+        }
+
+        // --- Redeem Code Logic ---
+        function showRedeemPopup() {
+            redeemPopup.classList.remove('hidden');
+            redeemMessage.textContent = '';
+            redeemInput.value = '';
+        }
+
+        function hideRedeemPopup() {
+            redeemPopup.classList.add('hidden');
+        }
+
+        redeemCodeBtn.addEventListener('click', showRedeemPopup);
+        closeRedeemBtn.addEventListener('click', () => {
+            hideRedeemPopup();
+            showGameType('home'); // Always show game selection after closing popup
+        });
+
+        submitRedeemBtn.addEventListener('click', () => {
+            const code = redeemInput.value.trim().toUpperCase();
+            if (!code) {
+                redeemMessage.textContent = 'Please enter a code.';
+                redeemMessage.className = 'text-center text-sm mb-4 text-red-500';
+                return;
+            }
+
+            if (usedRedeemCodes.includes(code)) {
+                redeemMessage.textContent = 'Code already redeemed!';
+                redeemMessage.className = 'text-center text-sm mb-4 text-yellow-500';
+                return;
+            }
+
+            // Hide the redeem popup instantly
+            hideRedeemPopup();
+
+            // Show game loader for 0.5 seconds
+            showGameLoader(500, () => { // 0.5 seconds for redeem
+                let amount = 0;
+                let message = '';
+                let isSuccess = false;
+
+                switch (code) {
+                    case 'WELCOME100':
+                        amount = 100.00;
+                        message = 'Welcome bonus of NRs 100 redeemed!';
+                        isSuccess = true;
+                        break;
+                    case 'FREESPIN':
+                        amount = 10.00;
+                        message = 'Free spin bonus of NRs 10 redeemed!';
+                        isSuccess = true;
+                        break;
+                    default:
+                        message = 'Invalid or expired code.';
+                        isSuccess = false;
+                        break;
+                }
+
+                if (isSuccess) {
+                    currentBalance += amount;
+                    usedRedeemCodes.push(code);
+                    animateBalance(currentBalance);
+                    saveGameState();
+                    // Directly activate home after successful redemption
+                    allGameSections.forEach(section => section.classList.remove('active'));
+                    gameSelectionOverlay.classList.add('active');
+                } else {
+                    // If failed, re-show redeem popup with error message
+                    showRedeemPopup(); // Re-open the popup
+                    redeemInput.value = code; // Keep the entered code
+                    redeemMessage.textContent = message;
+                    redeemMessage.className = 'text-center text-sm mb-4 text-red-500';
+                }
+            });
+        });
+
+        // --- Loader & Transition Functions ---
+
+        /**
+         * Shows a full-screen splash screen with the app title and a loader bar.
+         * Used for initial site load.
+         * @param {function} callback Function to execute after the splash screen finishes.
+         */
+        function showSplashScreen(callback) {
+            const SPLASH_SCREEN_DURATION = 1500; // 1.5 seconds for "loading site"
+
+            transitionOverlay.classList.remove('hidden', 'fade-out');
+            transitionOverlay.classList.add('active');
+            betiqTitleTransition.classList.remove('hidden', 'fade-out'); // Show title
+            betiqTitleTransition.classList.add('active');
+            appLoader.classList.remove('hidden'); // Show loader bar
+
+            // Apply blur slightly after showing to make the transition smoother
+            setTimeout(() => {
+                transitionOverlay.classList.add('blur-active');
+            }, 50);
+
+            // After the main duration, start fading out the splash elements
+            setTimeout(() => {
+                betiqTitleTransition.classList.remove('active');
+                betiqTitleTransition.classList.add('fade-out'); // Fade out title
+                appLoader.classList.add('hidden'); // Hide loader bar
+
+                transitionOverlay.classList.remove('blur-active'); // Remove blur before fade-out
+                transitionOverlay.classList.add('fade-out'); // Fade out the overlay background
+
+                // Complete hide after fade-out
+                setTimeout(() => {
+                    transitionOverlay.classList.add('hidden');
+                    transitionOverlay.classList.remove('fade-out');
+                    transitionOverlay.classList.remove('active'); // Prevent invisible blocker - FIX APPLIED
+                    if (callback) callback();
+                }, 500); // Duration for overlay fade-out
+            }, SPLASH_SCREEN_DURATION); // Main duration the splash screen is visible
+        }
+
+        /**
+         * Shows a minimal game loader (just the bar) for transitions between games or redeem.
+         * @param {number} durationMs The duration the loader bar is visible.
+         * @param {function} callback Function to execute after the loader finishes.
+         */
+        function showGameLoader(durationMs, callback) {
+            const FADE_OUT_DURATION = 500; // Duration for overlay fade out
+
+            transitionOverlay.classList.remove('hidden', 'fade-out', 'blur-active'); // Reset all states
+            transitionOverlay.classList.add('active'); // Make overlay visible
+            betiqTitleTransition.classList.add('hidden'); // Ensure title is hidden for game loader
+            appLoader.classList.remove('hidden'); // Show just the small loader
+
+            setTimeout(() => {
+                appLoader.classList.add('hidden'); // Hide loader bar
+                transitionOverlay.classList.remove('blur-active'); // Remove blur before fade-out
+                transitionOverlay.classList.add('fade-out'); // Start fading out background
+
+                setTimeout(() => {
+                    transitionOverlay.classList.add('hidden');
+                    transitionOverlay.classList.remove('fade-out');
+                    transitionOverlay.classList.remove('active'); // Prevent invisible blocker - FIX APPLIED
+                    if (callback) callback();
+                }, FADE_OUT_DURATION); // Duration of background fade-out
+            }, durationMs); // Duration the loader bar is visible
+        }
+
+
+        // --- Game Navigation (Dynamic Display) ---
+        /**
+         * Shows a specific game section and hides others.
+         * This function is now mostly a wrapper for showing game content after loader.
+         * @param {string} gameType The type of game to show ('home', 'aviator', 'mines', 'plinko', 'thimbles').
+         */
+        function showGameType(gameType) {
+            allGameSections.forEach(section => section.classList.remove('active')); // Hide all first
+
+            if (gameType === 'home') {
+                gameSelectionOverlay.classList.add('active');
+            } else if (gameType === 'aviator') {
+                aviatorGameContainer.classList.add('active');
+                resizeAviatorCanvas(); // Ensure canvas is sized correctly when shown
+                resetAviatorGame(); // Reset game state
+            } else if (gameType === 'mines') {
+                minesGameContainer.classList.add('active');
+                resetMinesGame(); // Reset game state
+            } else if (gameType === 'plinko') {
+                plinkoGameContainer.classList.add('active');
+                setupPlinkoBoard(); // Ensure canvas is sized correctly and board set up
+                resetPlinkoGame(); // Reset game state
+            } else if (gameType === 'thimbles') { // Renamed from shell
+                thimblesGameContainer.classList.add('active');
+                resetThimblesGame(); // Reset thimbles game UI
+            }
+        }
+
+        // Attach event listeners for game icons
+        gameIcons.forEach(icon => {
+            icon.addEventListener('click', (event) => {
+                const gameType = event.currentTarget.dataset.gameType;
+                // Show game loader for 1.5 seconds when switching games
+                showGameLoader(1500, () => {
+                    showGameType(gameType); // Show the selected game after loader finishes
+                });
+            });
+        });
+
+        // Event listener for logo to go back to home
+        logoHomeBtn.addEventListener('click', () => {
+            showGameLoader(1500, () => { // 1.5 seconds for going back to home
+                showGameType('home');
+            });
+            animateBalance(currentBalance); // Ensure balance is updated
+        });
+
+        // --- Carousel Logic ---
+        function initCarousel() {
+            totalSlides = carouselSlidesContainer.children.length;
+            if (totalSlides === 0) return;
+
+            // Create dots
+            for (let i = 0; i < totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.classList.add('carousel-dot');
+                dot.dataset.index = i;
+                dot.addEventListener('click', () => showSlide(i));
+                carouselDotsContainer.appendChild(dot);
+            }
+
+            // Function to show a specific slide
+            function showSlide(index) {
+                currentSlideIndex = index;
+                updateCarouselDisplay();
+                resetCarouselAutoTransition(); // Reset timer on manual navigation
+            }
+
+            updateCarouselDisplay();
+            startCarouselAutoTransition();
+
+            carouselPrevBtn.addEventListener('click', () => {
+                currentSlideIndex = (currentSlideIndex - 1 + totalSlides) % totalSlides;
+                updateCarouselDisplay();
+                resetCarouselAutoTransition();
+            });
+
+            carouselNextBtn.addEventListener('click', () => {
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                updateCarouselDisplay();
+                resetCarouselAutoTransition();
+            });
+        }
+
+        function updateCarouselDisplay() {
+            // Recalculate slide width to ensure responsiveness
+            const slideWidth = carouselSlidesContainer.children[0].clientWidth;
+            carouselSlidesContainer.style.transform = `translateX(-${currentSlideIndex * slideWidth}px)`;
+
+            // Update dots
+            Array.from(carouselDotsContainer.children).forEach((dot, index) => {
+                if (index === currentSlideIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function startCarouselAutoTransition() {
+            clearInterval(carouselInterval); // Clear any existing interval
+            carouselInterval = setInterval(() => {
+                currentSlideIndex = (currentSlideIndex + 1) % totalSlides;
+                updateCarouselDisplay();
+            }, SLIDE_TRANSITION_INTERVAL);
+        }
+
+        function resetCarouselAutoTransition() {
+            startCarouselAutoTransition(); // Restart the timer
+        }
+
+        // --- Aviator Game Logic ---
+        let plane = { x: 0, y: 0, scale: 1, rotation: 0 };
+        let targetCrashMultiplier = 0; // Where it will crash
+        let currentFlightTime = 0; // In seconds
+        const AVIATOR_PLANE_BASE_SIZE = 20;
+
+        function resetAviatorGame() {
+            cancelAnimationFrame(aviatorAnimationId);
+            aviatorCtx.clearRect(0, 0, aviatorCanvas.width, aviatorCanvas.height);
+            multiplierDisplay.classList.add('hidden');
+            aviatorGameMessage.textContent = 'Place your bet and start the round!';
+            aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-text';
+            cashOutAviatorBtn.classList.add('hidden');
+            startAviatorGameBtn.disabled = false;
+            aviatorGameActive = false;
+            currentMultiplier = 1.00;
+            currentFlightTime = 0;
+            plane = { x: 0, y: 0, scale: 1, rotation: 0 }; // Reset plane state
+            updateBetDisplay('aviator');
+            resizeAviatorCanvas(); // Ensure canvas is correctly sized and background drawn
+            renderHistory(aviatorHistoryDiv, aviatorGameHistory); // Render history on reset/load
+        }
+
+        function resizeAviatorCanvas() {
+            const container = aviatorCanvas.parentElement;
+            aviatorCanvas.width = container.clientWidth;
+            aviatorCanvas.height = container.clientHeight;
+            drawAviatorBackground(); // Redraw background on resize
+            // If game is active, redraw plane too
+            if (aviatorGameActive) {
+                drawPlane();
+            }
+        }
+
+        function drawAviatorBackground() {
+            aviatorCtx.clearRect(0, 0, aviatorCanvas.width, aviatorCanvas.height);
+            // Draw a dynamic sky gradient based on time of day (simplified)
+            const timeOfDayFactor = Math.sin(Date.now() * 0.000005) * 0.5 + 0.5; // Slow change between 0 and 1
+            const topColor = `hsl(210, 30%, ${10 + timeOfDayFactor * 20}%)`; // Darker to lighter blue
+            const bottomColor = `hsl(240, 20%, ${20 + timeOfDayFactor * 15}%)`; // Slightly purplish dark
+
+            const gradient = aviatorCtx.createLinearGradient(0, 0, 0, aviatorCanvas.height);
+            gradient.addColorStop(0, topColor);
+            gradient.addColorStop(1, bottomColor);
+            aviatorCtx.fillStyle = gradient;
+            aviatorCtx.fillRect(0, 0, aviatorCanvas.width, aviatorCanvas.height);
+
+            // Draw ground (slightly animated to give a sense of movement)
+            const groundHeight = aviatorCanvas.height * 0.2;
+            const groundY = aviatorCanvas.height - groundHeight;
+
+            aviatorCtx.fillStyle = '#4A5568'; // Static ground color
+            aviatorCtx.fillRect(0, groundY, aviatorCanvas.width, groundHeight);
+
+            // Add simple horizon line
+            aviatorCtx.strokeStyle = '#374151';
+            aviatorCtx.lineWidth = 1;
+            aviatorCtx.beginPath();
+            aviatorCtx.moveTo(0, groundY);
+            aviatorCtx.lineTo(aviatorCanvas.width, groundY);
+            aviatorCtx.stroke();
+        }
+
+        function drawPlane() {
+            aviatorCtx.save(); // Save the current canvas state
+
+            // Plane's starting point and overall trajectory
+            const startX = aviatorCanvas.width * 0.1;
+            const startY = aviatorCanvas.height * 0.8;
+
+            // Trajectory based on flight time - parabolic curve
+            const flightProgress = currentFlightTime * 0.1; // Scale time for trajectory
+            const dx = flightProgress * aviatorCanvas.width * 0.7; // Horizontal movement
+            const dy = -(flightProgress * flightProgress) * aviatorCanvas.height * 0.7; // Upward parabolic movement
+
+            const renderX = startX + dx;
+            const renderY = startY + dy;
+
+            // Plane rotation - tilts more as it goes up
+            plane.rotation = -Math.min(flightProgress * 0.8, Math.PI / 4); // Max 45 degrees tilt
+
+            // Plane scale - grows slightly as it flies towards "camera"
+            plane.scale = 1 + flightProgress * 0.5;
+
+            aviatorCtx.translate(renderX, renderY);
+            aviatorCtx.scale(plane.scale, plane.scale);
+            aviatorCtx.rotate(plane.rotation);
+
+            // Draw the plane (SVG-like shape) centered at (0,0) relative to its translated origin
+            const size = AVIATOR_PLANE_BASE_SIZE;
+            aviatorCtx.fillStyle = '#CBD5E0'; // Light gray for plane
+            aviatorCtx.shadowBlur = 15;
+            aviatorCtx.shadowColor = 'rgba(255, 255, 255, 0.5)'; // Subtle glow
+
+            // Main body
+            aviatorCtx.beginPath();
+            aviatorCtx.moveTo(size * 2, 0); // Tail
+            aviatorCtx.lineTo(-size * 1.5, -size * 0.3); // Nose top
+            aviatorCtx.lineTo(-size * 1.5, size * 0.3); // Nose bottom
+            aviatorCtx.closePath();
+            aviatorCtx.fill();
+
+            // Wings
+            aviatorCtx.beginPath();
+            aviatorCtx.moveTo(-size, 0);
+            aviatorCtx.lineTo(-size * 0.5, -size * 1.5); // Top wing tip
+            aviatorCtx.lineTo(size * 0.5, 0);
+            aviatorCtx.lineTo(-size * 0.5, size * 1.5); // Bottom wing tip
+            aviatorCtx.closePath();
+            aviatorCtx.fill();
+
+            // Tail fin
+            aviatorCtx.beginPath();
+            aviatorCtx.moveTo(size * 1.5, 0);
+            aviatorCtx.lineTo(size * 1.2, -size * 0.7);
+            aviatorCtx.lineTo(size * 1.8, 0);
+            aviatorCtx.closePath();
+            aviatorCtx.fill();
+
+            aviatorCtx.shadowBlur = 0; // Reset shadow
+
+            // Simple jet trail (optional, more advanced might use particles)
+            if (aviatorGameActive && currentFlightTime > 0.1) {
+                aviatorCtx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                aviatorCtx.beginPath();
+                // Trail starts from the back of the plane, shrinks and fades over time
+                const trailRadius = size * 0.5 * (1 - Math.min(1, currentFlightTime * 0.1));
+                aviatorCtx.arc(size * 2.2, 0, trailRadius, 0, Math.PI * 2);
+                aviatorCtx.fill();
+            }
+
+            aviatorCtx.restore(); // Restore the canvas to its state before this plane drawing
+        }
+
+        function animateAviator() {
+            aviatorCtx.clearRect(0, 0, aviatorCanvas.width, aviatorCanvas.height);
+            drawAviatorBackground(); // Redraw background
+
+            if (!aviatorGameActive) {
+                // If game ended, still draw the plane at its final state for a moment
+                drawPlane();
+                return;
+            }
+
+            // Update flight time and multiplier
+            currentFlightTime += 0.01; // Increase flight time per frame (simulates seconds)
+            // Multiplier grows exponentially, faster at higher values
+            currentMultiplier = 1 + Math.pow(currentFlightTime, 2); // Squared growth for more drama
+
+            multiplierDisplay.textContent = `${currentMultiplier.toFixed(2)}x`;
+
+            drawPlane(); // Draw the plane at its new state
+
+            // Check for crash based on targetMultiplier
+            if (currentMultiplier >= targetCrashMultiplier) {
+                aviatorGameActive = false;
+                multiplierDisplay.classList.add('text-red-500'); // Indicate crash
+                aviatorGameMessage.textContent = `CRASH! Multiplier: ${targetCrashMultiplier.toFixed(2)}x. You lost ${CURRENCY_SYMBOL}${aviatorBetAmount.toFixed(2)}.`;
+                aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                cashOutAviatorBtn.classList.add('hidden');
+                recordGameHistory('aviator', aviatorBetAmount, 0, false);
+                startAviatorGameBtn.disabled = false;
+                aviatorCrashSound.play(); // Play crash sound
+                return; // Stop animation
+            }
+
+            aviatorAnimationId = requestAnimationFrame(animateAviator);
+        }
+
+        startAviatorGameBtn.addEventListener('click', () => {
+            if (currentBalance < aviatorBetAmount) {
+                aviatorGameMessage.textContent = 'Insufficient balance!';
+                aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                return;
+            }
+            if (aviatorGameActive) {
+                aviatorGameMessage.textContent = 'Game already in progress!';
+                aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+
+            currentBalance -= aviatorBetAmount;
+            animateBalance(currentBalance);
+            aviatorGameActive = true;
+            currentMultiplier = 1.00;
+            currentFlightTime = 0;
+            plane = { x: 0, y: 0, scale: 1, rotation: 0 }; // Reset plane for new round
+            multiplierDisplay.classList.remove('hidden', 'text-red-500');
+            multiplierDisplay.classList.add('text-stake-green');
+            cashOutAviatorBtn.classList.remove('hidden');
+            startAviatorGameBtn.disabled = true;
+
+            // Determine crash multiplier (random between 1.01x and 10.00x, biased towards lower)
+            let randomValue = Math.random();
+            let initialTarget = parseFloat((Math.random() * 14 + 1.01).toFixed(2)); // Base range for target crash
+
+            // Rule: Fast Crash on High Bets
+            if (aviatorBetAmount > currentBalance * 0.1 && Math.random() < 0.6) {
+                initialTarget = parseFloat((Math.random() * 0.5 + 1.01).toFixed(2)); // Crash between 1.01x and 1.51x
+            } else {
+                 // Rule: Crash Near Big Multipliers - Adjust initialTarget's distribution
+                if (randomValue < 0.6) { // 60% chance for 1.01x to 2.5x
+                    initialTarget = parseFloat((Math.random() * 1.49 + 1.01).toFixed(2));
+                } else if (randomValue < 0.9) { // 30% chance for 2.5x to 6.0x
+                    initialTarget = parseFloat((Math.random() * 3.5 + 2.5).toFixed(2));
+                } else { // 10% chance for 6.0x to 15.0x
+                    initialTarget = parseFloat((Math.random() * 9 + 6).toFixed(2));
+                }
+            }
+
+            // Rule: Detect Timing Players
+            let allCashoutsNear2x = aviatorCashoutHistory.length === 5 && aviatorCashoutHistory.every(m => m >= 1.95 && m <= 2.05);
+            if (aviatorGameCount > 0 && aviatorGameCount % 5 === 0 && allCashoutsNear2x) {
+                initialTarget = 1.99; // Force crash at 1.99x
+                aviatorCashoutHistory = []; // Reset history after triggering
+            }
+
+            targetCrashMultiplier = Math.min(15.00, Math.max(1.01, initialTarget)); // Ensure min/max boundaries
+
+            aviatorGameMessage.textContent = 'Plane is flying... Cash out before it crashes!';
+            aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+
+            animateAviator();
+        });
+
+        cashOutAviatorBtn.addEventListener('click', () => {
+            if (!aviatorGameActive) return;
+
+            aviatorGameActive = false;
+            cancelAnimationFrame(aviatorAnimationId);
+
+            const winnings = aviatorBetAmount * currentMultiplier;
+            currentBalance += winnings;
+            animateBalance(currentBalance);
+
+            aviatorGameMessage.textContent = `Cashed out at ${currentMultiplier.toFixed(2)}x! You won ${CURRENCY_SYMBOL}${winnings.toFixed(2)}.`;
+            aviatorGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+            cashOutAviatorBtn.classList.add('hidden');
+            recordGameHistory('aviator', aviatorBetAmount, winnings, true); // This will update aviatorCashoutHistory
+            startAviatorGameBtn.disabled = false;
+        });
+
+        // Aviator Event Listeners
+        betAmountSliderAviator.addEventListener('input', () => updateBetDisplay('aviator'));
+        manualBetInputAviator.addEventListener('input', () => {
+            let value = parseFloat(manualBetInputAviator.value);
+            if (isNaN(value)) value = 0.1;
+            value = Math.max(0.1, Math.min(100, value));
+            betAmountSliderAviator.value = value.toFixed(1);
+            updateBetDisplay('aviator');
+        });
+        window.addEventListener('resize', resizeAviatorCanvas); // Global resize listener for canvas
+
+
+        // --- Mines Game Logic ---
+        function resetMinesGame() {
+            minesGridContainer.innerHTML = '';
+            minesGameMessage.textContent = 'Select a cell.';
+            minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-text';
+            cashOutMinesBtn.classList.add('hidden');
+            minesGameActive = false;
+            minesProfitMultiplier = 1.00;
+            minesRevealedCount = 0;
+            minesGrid = []; // Clear previous grid state for new game
+            minesClickCount = 0; // Reset click count for new game
+            updateBetDisplay('mines'); // Reset bet display for mines
+            startGameMinesBtn.disabled = false;
+            renderHistory(minesHistoryDiv, minesGameHistory); // Render history on reset/load
+        }
+
+        function createMinesGrid() {
+            minesGrid = [];
+            minesGridContainer.innerHTML = '';
+            const totalCells = 25; // 5x5 grid
+            const minePositions = new Set();
+            let currentMinesCount = minesSelectedCount;
+
+            // Rule: Force Loss After X Wins - Apply 40% more mines if consecutive cashouts met
+            if (minesConsecutiveCashouts >= 3) {
+                currentMinesCount = Math.min(24, Math.ceil(minesSelectedCount * 1.4)); // Cap at 24 to leave at least 1 safe cell
+                minesConsecutiveCashouts = 0; // Reset after applying
+                console.log(`Debug: Forcing more mines this round. New mine count: ${currentMinesCount}`);
+            }
+
+            // Place mines randomly
+            while (minePositions.size < currentMinesCount) {
+                minePositions.add(Math.floor(Math.random() * totalCells));
+            }
+
+            // Simple corner avoidance tracking for "Predict Repeated Patterns"
+            // For now, this only logs. A more complex implementation would
+            // require tracking common user picks and adjusting mine placement.
+            const cornerIndices = [0, 4, 20, 24];
+            let avoidedCorners = true;
+            for(let i = 0; i < minesGameHistory.length && i < 10; i++) { // Check last 10 games
+                const game = minesGameHistory[i];
+                if (game.win && game.pickedIndex !== undefined && cornerIndices.includes(game.pickedIndex)) {
+                     avoidedCorners = false; // User did pick a corner, not avoiding
+                     break;
+                }
+            }
+            if (avoidedCorners && minesGameHistory.length >= 10 && Math.random() < 0.1) {
+                console.log("Debug: Player seems to avoid corners, considering placing mine in a random corner.");
+                // This would be the place to modify minePositions to place a mine in a corner.
+                // For simplicity, we'll leave it random for now as re-rigging is complex without server.
+            }
+
+            for (let i = 0; i < totalCells; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'mines-cell w-16 h-16 bg-gray-700 rounded-lg flex-center cursor-pointer text-2xl font-bold transition-all duration-150 ease-in-out hover:bg-gray-600';
+                cell.dataset.index = i;
+                cell.dataset.hasMine = minePositions.has(i); // Store true/false directly
+                cell.addEventListener('click', handleMinesCellClick);
+                minesGrid.push({ element: cell, hasMine: minePositions.has(i), revealed: false });
+                minesGridContainer.appendChild(cell);
+            }
+        }
+
+        function handleMinesCellClick(event) {
+            if (!minesGameActive) {
+                minesGameMessage.textContent = 'Please start a new game first!';
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+
+            const cellIndex = parseInt(event.currentTarget.dataset.index);
+            const cellData = minesGrid[cellIndex];
+
+            if (cellData.revealed) {
+                minesGameMessage.textContent = 'This cell is already revealed!';
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+
+            minesClickCount++; // Increment click count
+
+            // Rule: More Mines -> Lower Safe Probability (Force mine on 2nd/3rd click if many mines)
+            if (minesSelectedCount > 20 && (minesClickCount === 2 || minesClickCount === 3)) {
+                if (!cellData.hasMine && Math.random() < 0.7) { // 70% chance to force a mine
+                    console.log(`Debug: Forcing mine at index ${cellIndex} due to high mine count and click count.`);
+                    cellData.hasMine = true; // Make this cell a mine
+                    // To maintain the total mine count, find a random existing mine and make it safe
+                    const currentMines = minesGrid.filter(c => c.hasMine);
+                    if (currentMines.length > minesSelectedCount) { // Only if we're adding one, ensure another is removed
+                        const safeMineIndex = currentMines[Math.floor(Math.random() * currentMines.length)].element.dataset.index;
+                        minesGrid[safeMineIndex].hasMine = false; // Make an existing mine safe
+                    }
+                }
+            }
+
+
+            cellData.revealed = true;
+            event.currentTarget.removeEventListener('click', handleMinesCellClick); // Prevent re-clicking
+
+            if (cellData.hasMine) {
+                event.currentTarget.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+                event.currentTarget.classList.add('bg-red-600', 'neon-glow-red');
+                event.currentTarget.innerHTML = '<span class="text-white">💣</span>'; // Bomb emoji
+                minesGameMessage.textContent = `You hit a mine! Game Over. You lost ${CURRENCY_SYMBOL}${minesBetAmount.toFixed(2)}.`;
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                minesGameActive = false;
+                cashOutMinesBtn.classList.add('hidden');
+                revealAllMines();
+                recordGameHistory('mines', minesBetAmount, 0, false);
+                startGameMinesBtn.disabled = false;
+                mineLoseSound.play(); // Play lose sound
+            } else {
+                event.currentTarget.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+                event.currentTarget.classList.add('bg-green-600', 'neon-glow-green');
+                event.currentTarget.innerHTML = '<span class="text-white">💎</span>'; // Diamond emoji
+                minesRevealedCount++;
+                minesProfitMultiplier = calculateMinesMultiplier(minesRevealedCount, minesSelectedCount);
+                minesGameMessage.textContent = `Safe! Current Multiplier: ${minesProfitMultiplier.toFixed(2)}x. Potential Win: ${CURRENCY_SYMBOL}${(minesBetAmount * minesProfitMultiplier).toFixed(2)}`;
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+                cashOutMinesBtn.classList.remove('hidden');
+                mineSafeSound.play(); // Play safe sound
+
+                if (minesRevealedCount >= (25 - minesSelectedCount)) {
+                    // All safe cells revealed, automatic win
+                    const winAmount = minesBetAmount * minesProfitMultiplier;
+                    currentBalance += winAmount;
+                    animateBalance(currentBalance);
+                    minesGameMessage.textContent = `Congratulations! You cleared all safe cells and won ${CURRENCY_SYMBOL}${winAmount.toFixed(2)}!`;
+                    minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+                    minesGameActive = false;
+                    cashOutMinesBtn.classList.add('hidden');
+                    recordGameHistory('mines', minesBetAmount, winAmount, true);
+                    startGameMinesBtn.disabled = false;
+                }
+            }
+        }
+
+        function calculateMinesMultiplier(revealedCount, minesCount) {
+            // Updated multiplier logic for better progression
+            const totalCells = 25;
+            const safeCells = totalCells - minesCount;
+
+            if (revealedCount === 0) return 1.00;
+
+            // Base multiplier for each revealed cell
+            const baseFactor = 1.05;
+            // Additional multiplier based on mine density (higher mine count means higher potential per click)
+            const mineDensityFactor = 1 + (minesCount / totalCells) * 1.5; // Scale more significantly
+
+            // Exponential growth with an adjustment for mine density
+            let multiplier = baseFactor * Math.pow(mineDensityFactor, revealedCount);
+
+            // Add a small linear component for a smoother feel, especially at lower counts
+            multiplier += revealedCount * 0.02 * (minesCount / 5); // Small bump based on revealed and mine count
+
+            return parseFloat(multiplier.toFixed(2));
+        }
+
+        function revealAllMines() {
+            minesGrid.forEach(cell => {
+                if (cell.hasMine && !cell.revealed) {
+                    cell.element.classList.remove('bg-gray-700', 'hover:bg-gray-600');
+                    cell.element.classList.add('bg-red-800');
+                    cell.element.innerHTML = '<span class="text-white">💣</span>';
+                }
+                // Also ensure all cells are unclickable after game ends
+                cell.element.removeEventListener('click', handleMinesCellClick);
+            });
+        }
+
+        // Mines Event Listeners
+        betAmountSliderMines.addEventListener('input', () => updateBetDisplay('mines'));
+        manualBetInputMines.addEventListener('input', () => {
+            let value = parseFloat(manualBetInputMines.value);
+            if (isNaN(value)) value = 0.1;
+            value = Math.max(0.1, Math.min(100, value));
+            betAmountSliderMines.value = value.toFixed(1);
+            updateBetDisplay('mines');
+        });
+        minesCountSlider.addEventListener('input', () => {
+            minesSelectedCount = parseInt(minesCountSlider.value);
+            minesCountValue.textContent = minesSelectedCount;
+        });
+
+        startGameMinesBtn.addEventListener('click', () => {
+            if (currentBalance < minesBetAmount) {
+                minesGameMessage.textContent = 'Insufficient balance!';
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                return;
+            }
+            if (minesGameActive) {
+                minesGameMessage.textContent = 'Game is already active. Cash out or wait for current round to finish.';
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+
+            currentBalance -= minesBetAmount;
+            animateBalance(currentBalance);
+            minesGameActive = true;
+            minesRevealedCount = 0;
+            minesProfitMultiplier = 1.00;
+            minesClickCount = 0; // Reset click count
+            minesGameMessage.textContent = 'Game started! Click a cell.';
+            minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+            cashOutMinesBtn.classList.add('hidden');
+            startGameMinesBtn.disabled = true; // Disable start button during game
+            createMinesGrid();
+        });
+
+        cashOutMinesBtn.addEventListener('click', () => {
+            if (!minesGameActive || minesRevealedCount === 0) {
+                minesGameMessage.textContent = 'Nothing to cash out yet.';
+                minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+            const winAmount = minesBetAmount * minesProfitMultiplier;
+            currentBalance += winAmount;
+            animateBalance(currentBalance);
+            minesGameMessage.textContent = `Cashed out! You won ${CURRENCY_SYMBOL}${winAmount.toFixed(2)}!`;
+            minesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+            minesGameActive = false;
+            cashOutMinesBtn.classList.add('hidden');
+            revealAllMines(); // Show all mines after cash out
+            recordGameHistory('mines', minesBetAmount, winAmount, true);
+            startGameMinesBtn.disabled = false;
+        });
+
+
+        // --- Plinko Game Logic ---
+        function resetPlinkoGame() {
+            plinkoGameMessage.textContent = 'Drop a ball!';
+            plinkoGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-text';
+            updateBetDisplay('plinko'); // Reset bet display for plinko
+            dropBallPlinkoBtn.disabled = false;
+            cancelAnimationFrame(plinkoAnimationFrameId); // Stop any ongoing animation
+            setupPlinkoBoard(); // Redraw pegs and clear canvas
+            renderHistory(plinkoHistoryDiv, plinkoGameHistory); // Render history on reset/load
+            plinkoTargetBinIndex = -1; // Reset target
+        }
+
+        // Helper for weighted random index selection
+        function getWeightedRandomIndex(weights) {
+            let totalWeight = 0;
+            for (let i = 0; i < weights.length; i++) {
+                totalWeight += weights[i];
+            }
+            let random = Math.random() * totalWeight;
+            for (let i = 0; i < weights.length; i++) {
+                if (random < weights[i]) {
+                    return i;
+                }
+                random -= weights[i];
+            }
+            return weights.length - 1; // Fallback
+        }
+
+        function setupPlinkoBoard() {
+            // Adjust canvas size
+            const container = document.getElementById('plinko-board');
+            if (!container) return; // Ensure container exists
+
+            plinkoCanvas.width = container.clientWidth;
+            plinkoCanvas.height = container.clientHeight;
+
+            plinkoCtx.clearRect(0, 0, plinkoCanvas.width, plinkoCanvas.height);
+            plinkoPegs = [];
+            const pegColor = '#4B5563'; // Gray color for pegs
+
+            // Adjust spacing for slower, more visible animation and realistic arrangement
+            const horizontalSpacing = plinkoCanvas.width / (PLINKO_ROWS + 2); // More space
+            const verticalSpacing = plinkoCanvas.height / (PLINKO_ROWS + 3); // More space at top/bottom
+
+            for (let row = 0; row < PLINKO_ROWS; row++) {
+                const numPegsInRow = row + 1;
+                // Offset every other row
+                const rowOffset = (row % 2 === 0) ? horizontalSpacing / 2 : 0;
+                const startX = (plinkoCanvas.width - (numPegsInRow - 1) * horizontalSpacing) / 2 + rowOffset;
+
+                for (let i = 0; i < numPegsInRow; i++) {
+                    const x = startX + i * horizontalSpacing;
+                    const y = (row + 1.5) * verticalSpacing; // Start pegs lower
+                    plinkoPegs.push({ x: x, y: y });
+                    drawPeg(x, y, PLINKO_PEG_RADIUS, pegColor);
+                }
+            }
+
+            // Draw multiplier bins at the bottom
+            drawPlinkoBins();
+        }
+
+        function drawPlinkoBins() {
+            let multipliers;
+            if (plinkoSelectedRisk === 0) multipliers = PLINKO_LOW_MULTIPLIERS;
+            else if (plinkoSelectedRisk === 1) multipliers = PLINKO_MEDIUM_MULTIPLIERS;
+            else multipliers = PLINKO_HIGH_MULTIPLIERS;
+
+            // Rule: Win Suppression on Repeats - Adjust multipliers if suppression is active
+            if (plinkoSuppressionActive) {
+                multipliers = multipliers.map((m, i) => {
+                    // Reduce outer probabilities for the next 5 games
+                    if (i < 2 || i >= multipliers.length - 2) { // Edge bins
+                        return Math.max(0, m * 0.5); // Halve the value for edge bins
+                    }
+                    return m;
+                });
+                console.log("Debug: Plinko suppression active, adjusted multipliers for display:", multipliers);
+            }
+
+            const numBins = multipliers.length;
+            const binWidth = plinkoCanvas.width / numBins;
+            const binHeight = 50; // Height of the multiplier bins
+
+            for (let i = 0; i < numBins; i++) {
+                const x = i * binWidth;
+                const y = plinkoCanvas.height - binHeight;
+
+                plinkoCtx.fillStyle = (multipliers[i] >= 1) ? '#047857' : '#991B1B'; // Dark green for win, dark red for loss
+                plinkoCtx.fillRect(x, y, binWidth, binHeight);
+
+                plinkoCtx.strokeStyle = '#374151'; // Border color
+                plinkoCtx.lineWidth = 1;
+                plinkoCtx.strokeRect(x, y, binWidth, binHeight);
+
+                plinkoCtx.fillStyle = 'white';
+                plinkoCtx.font = '14px Inter';
+                plinkoCtx.textAlign = 'center';
+                plinkoCtx.textBaseline = 'middle';
+                plinkoCtx.fillText(`${multipliers[i].toFixed(1)}x`, x + binWidth / 2, y + binHeight / 2);
+            }
+        }
+
+        function drawPeg(x, y, radius, color) {
+            plinkoCtx.beginPath();
+            plinkoCtx.arc(x, y, radius, 0, Math.PI * 2);
+            plinkoCtx.fillStyle = color;
+            plinkoCtx.fill();
+            plinkoCtx.closePath();
+        }
+
+        function drawBall(x, y, radius, color) {
+            plinkoCtx.beginPath();
+            plinkoCtx.arc(x, y, radius, 0, Math.PI * 2);
+            plinkoCtx.fillStyle = color;
+            plinkoCtx.shadowBlur = 10;
+            plinkoCtx.shadowColor = 'rgba(0, 230, 118, 0.7)'; // Green glow
+            plinkoCtx.fill();
+            plinkoCtx.shadowBlur = 0; // Reset shadow
+            plinkoCtx.closePath();
+        }
+
+        function dropBall() {
+            if (currentBalance < plinkoBetAmount) {
+                plinkoGameMessage.textContent = 'Insufficient balance!';
+                plinkoGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                return;
+            }
+
+            currentBalance -= plinkoBetAmount;
+            animateBalance(currentBalance);
+            dropBallPlinkoBtn.disabled = true;
+
+            // Determine target bin index using weighted probabilities
+            let weightsToUse;
+            if (plinkoSelectedRisk === 0) weightsToUse = [...PLINKO_LOW_WEIGHTS];
+            else if (plinkoSelectedRisk === 1) weightsToUse = [...PLINKO_MEDIUM_WEIGHTS];
+            else weightsToUse = [...PLINKO_HIGH_WEIGHTS];
+
+            // Rule: Win Suppression on Repeats - Adjust weights for final bin determination
+            if (plinkoSuppressionActive) {
+                weightsToUse = weightsToUse.map((w, i) => {
+                    if (i < 2 || i >= weightsToUse.length - 2) {
+                        return w * 0.1; // Make edge slots very unlikely
+                    }
+                    return w;
+                });
+                console.log("Debug: Plinko suppression active, adjusted weights for outcome:", weightsToUse);
+            }
+            plinkoTargetBinIndex = getWeightedRandomIndex(weightsToUse);
+            console.log("Debug: Predetermined target bin index:", plinkoTargetBinIndex);
+
+
+            plinkoBall = {
+                x: plinkoCanvas.width / 2,
+                y: PLINKO_BALL_RADIUS, // Start at the very top
+                vx: (Math.random() - 0.5) * 5, // Slower initial horizontal velocity for more control
+                vy: 0.1 // Slower initial vertical velocity
+            };
+
+            plinkoGameMessage.textContent = 'Ball dropped!';
+            plinkoGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+
+            cancelAnimationFrame(plinkoAnimationFrameId); // Stop any previous animation
+            animatePlinko();
+
+            // Rule: Win Suppression on Repeats - Check and activate suppression
+            if (plinkoHighWinCount >= 3 && plinkoGamesSinceHighWinCountCheck >= 10) {
+                plinkoSuppressionActive = true;
+                plinkoSuppressionGamesLeft = 5;
+                plinkoHighWinCount = 0; // Reset
+                plinkoGamesSinceHighWinCountCheck = 0; // Reset
+                console.log("Debug: Plinko high win suppression activated for 5 games.");
+            }
+            if (plinkoSuppressionActive) {
+                plinkoSuppressionGamesLeft--;
+                if (plinkoSuppressionGamesLeft <= 0) {
+                    plinkoSuppressionActive = false;
+                    console.log("Debug: Plinko high win suppression ended.");
+                }
+            }
+        }
+
+        let lastPegHit = null; // Track the last peg hit for glow effect timing
+
+        function animatePlinko() {
+            plinkoCtx.clearRect(0, 0, plinkoCanvas.width, plinkoCanvas.height);
+            setupPlinkoBoard(); // Redraw pegs and bins (includes redrawing with updated peg state for glow)
+
+            // Physics update
+            plinkoBall.vy += 0.4; // Gravity (slightly slower for visual appeal)
+            plinkoBall.x += plinkoBall.vx;
+            plinkoBall.y += plinkoBall.vy;
+
+            // Collision with walls
+            if (plinkoBall.x - PLINKO_BALL_RADIUS < 0) {
+                plinkoBall.x = PLINKO_BALL_RADIUS;
+                plinkoBall.vx *= -0.6; // Bounce with energy loss
+            } else if (plinkoBall.x + PLINKO_BALL_RADIUS > plinkoCanvas.width) {
+                plinkoBall.x = plinkoCanvas.width - PLINKO_BALL_RADIUS;
+                plinkoBall.vx *= -0.6;
+            }
+
+            // Guide the ball towards the target bin
+            if (plinkoBall.y > plinkoCanvas.height * 0.5 && plinkoTargetBinIndex !== -1) { // Start guiding halfway down
+                const multipliers = (plinkoSelectedRisk === 0) ? PLINKO_LOW_MULTIPLIERS :
+                                    (plinkoSelectedRisk === 1) ? PLINKO_MEDIUM_MULTIPLIERS :
+                                    PLINKO_HIGH_MULTIPLIERS;
+                const numBins = multipliers.length;
+                const binWidth = plinkoCanvas.width / numBins;
+                const targetX = plinkoTargetBinIndex * binWidth + binWidth / 2; // Center of the target bin
+
+                const diffX = targetX - plinkoBall.x;
+                const steeringForce = diffX * 0.005; // Gentle steering force
+                plinkoBall.vx += steeringForce;
+            }
+
+
+            // Collision with pegs
+            plinkoPegs.forEach(peg => {
+                const dx = plinkoBall.x - peg.x;
+                const dy = plinkoBall.y - peg.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < PLINKO_BALL_RADIUS + PLINKO_PEG_RADIUS) {
+                    // Collision detected
+                    if (peg !== lastPegHit) { // Prevent multiple hits on the same peg in one frame
+                        plinkoHitSound.play();
+                        // Add glow effect to the hit peg (temporary)
+                        peg.glowing = true;
+                        setTimeout(() => {
+                            peg.glowing = false;
+                        }, 100); // Glow for 100ms
+                        lastPegHit = peg;
+                    }
+
+                    const angle = Math.atan2(dy, dx);
+                    const overlap = (PLINKO_BALL_RADIUS + PLINKO_PEG_RADIUS) - distance;
+
+                    // Push ball out of peg
+                    plinkoBall.x += overlap * Math.cos(angle);
+                    plinkoBall.y += overlap * Math.sin(angle);
+
+                    // Reflect velocity (more energetic bounce)
+                    const normalX = dx / distance;
+                    const normalY = dy / distance;
+                    const dotProduct = plinkoBall.vx * normalX + plinkoBall.vy * normalY;
+
+                    plinkoBall.vx = (plinkoBall.vx - 2 * dotProduct * normalX) * 0.7; // Apply energy loss
+                    plinkoBall.vy = (plinkoBall.vy - 2 * dotProduct * normalY) * 0.7;
+
+                    // Add a small random horizontal impulse to prevent predictable paths
+                    plinkoBall.vx += (Math.random() - 0.5) * 0.5; // Smaller random impulse for realism
+                }
+            });
+
+            // Draw pegs (with potential glow)
+            plinkoPegs.forEach(peg => {
+                plinkoCtx.beginPath();
+                plinkoCtx.arc(peg.x, peg.y, PLINKO_PEG_RADIUS, 0, Math.PI * 2);
+                plinkoCtx.fillStyle = '#4B5563'; // Default peg color
+                if (peg.glowing) {
+                    plinkoCtx.shadowBlur = 10;
+                    plinkoCtx.shadowColor = 'var(--stake-green)';
+                    plinkoCtx.fillStyle = 'var(--neon-green-accent)';
+                }
+                plinkoCtx.fill();
+                plinkoCtx.shadowBlur = 0; // Reset shadow
+                plinkoCtx.closePath();
+            });
+
+            drawBall(plinkoBall.x, plinkoBall.y, PLINKO_BALL_RADIUS, getComputedStyle(document.documentElement).getPropertyValue('--stake-green').trim());
+
+            // Check if ball reached bottom
+            if (plinkoBall.y + PLINKO_BALL_RADIUS >= plinkoCanvas.height - 50) { // 50 is bin height
+                let multipliers;
+                if (plinkoSelectedRisk === 0) multipliers = PLINKO_LOW_MULTIPLIERS;
+                else if (plinkoSelectedRisk === 1) multipliers = PLINKO_MEDIUM_MULTIPLIERS;
+                else multipliers = PLINKO_HIGH_MULTIPLIERS;
+
+                // Use the predetermined target bin index
+                const finalMultiplier = multipliers[Math.max(0, Math.min(plinkoTargetBinIndex, multipliers.length - 1))] || 0;
+                const winnings = plinkoBetAmount * finalMultiplier;
+                currentBalance += winnings;
+                animateBalance(currentBalance);
+
+                const win = winnings > plinkoBetAmount; // Win if payout is more than bet
+                plinkoGameMessage.textContent = `Landed on ${finalMultiplier.toFixed(1)}x! You ${win ? 'won' : 'lost'} ${CURRENCY_SYMBOL}${winnings.toFixed(2)}.`;
+                plinkoGameMessage.className = `text-lg font-semibold text-center mt-4 ${win ? 'text-stake-green' : 'text-red-500'}`;
+                recordGameHistory('plinko', plinkoBetAmount, winnings, win);
+                dropBallPlinkoBtn.disabled = false;
+                plinkoTargetBinIndex = -1; // Reset target for next game
+                return; // Stop animation
+            }
+
+            plinkoAnimationFrameId = requestAnimationFrame(animatePlinko);
+        }
+
+        // Plinko Event Listeners
+        betAmountSliderPlinko.addEventListener('input', () => updateBetDisplay('plinko'));
+        manualBetInputPlinko.addEventListener('input', () => {
+            let value = parseFloat(manualBetInputPlinko.value);
+            if (isNaN(value)) value = 0.1;
+            value = Math.max(0.1, Math.min(100, value));
+            betAmountSliderPlinko.value = value.toFixed(1);
+            updateBetDisplay('plinko');
+        });
+        plinkoRiskSlider.addEventListener('input', () => {
+            plinkoSelectedRisk = parseInt(plinkoRiskSlider.value);
+            const riskLabels = ['Low', 'Medium', 'High'];
+            plinkoRiskValue.textContent = riskLabels[plinkoSelectedRisk];
+            setupPlinkoBoard(); // Redraw bins with new multipliers
+        });
+        dropBallPlinkoBtn.addEventListener('click', dropBall);
+        window.addEventListener('resize', setupPlinkoBoard); // Global resize listener for canvas
+
+
+        // --- Thimbles Game Logic (Formerly Shell Game) ---
+
+        // Array to store the actual DOM elements of the thimbles.
+        // This array's order does not change, but their visual positions do.
+        // `thimbleElements` is already defined by querySelectorAll('.thimble')
+
+        // `visualSlotMapping` stores the *logical index* (data-index) of the thimble that is currently
+        // in visual slot 0 (leftmost), 1 (middle), and 2 (rightmost).
+        // e.g., if visualSlotMapping = [1, 0, 2], it means thimble with data-index 1 is at leftmost visual position,
+        // thimble with data-index 0 is at middle visual position, and thimble with data-index 2 is at rightmost.
+        let visualSlotMapping = [0, 1, 2]; // Initial state: thimble 0 in slot 0, 1 in 1, 2 in 2
+
+        // Store target X positions for each of the 3 visual slots
+        let slotXPositions = [];
+
+        function calculateSlotPositions() {
+            slotXPositions = [];
+            // Assuming thimble width is 120px (from CSS .thimble) and gap is 20px
+            const thimbleWidth = 120;
+            const thimbleGap = 20;
+            const numThimbles = 3;
+
+            // Calculate total width taken by thimbles and gaps
+            const totalContentWidth = (thimbleWidth * numThimbles) + (thimbleGap * (numThimbles - 1));
+
+            // Calculate starting X to center the thimbles in the container
+            const containerWidth = thimbleContainer.clientWidth;
+            const startX = (containerWidth - totalContentWidth) / 2;
+
+            for (let i = 0; i < numThimbles; i++) {
+                slotXPositions.push(startX + i * (thimbleWidth + thimbleGap));
+            }
+
+            // Set initial positions for thimble elements based on their current logical-to-visual mapping
+            thimbleElements.forEach((thimbleWrapper, logicalIndex) => {
+                const currentVisualSlot = visualSlotMapping.indexOf(logicalIndex); // Where is this logical thimble currently?
+                thimbleWrapper.style.left = `${slotXPositions[currentVisualSlot]}px`;
+            });
+
+            // Position the ball under its initial thimble (after positions are set)
+            updateBallPosition(thimblesBallPosition);
+        }
+
+        function updateBallPosition(thimbleLogicalIndex) {
+            // Find which visual slot the logical thimble (thimbleLogicalIndex) is currently in
+            const visualSlotIndex = visualSlotMapping.indexOf(thimbleLogicalIndex);
+            if (visualSlotIndex === -1) {
+                console.error("Ball's logical thimble not found in visual slots.");
+                return;
+            }
+
+            const targetThimbleElementWrapper = thimbleElements[thimbleLogicalIndex]; // The actual DOM element wrapper
+            const targetThimbleImage = targetThimbleElementWrapper.querySelector('img'); // The image inside
+
+            // Calculate center of the image, and then adjust for ball placement
+            // The ball's top position should be such that it looks like it's "under" the cup.
+            // This might need fine-tuning based on the actual cup.png image.
+            const targetX = slotXPositions[visualSlotIndex] + targetThimbleElementWrapper.offsetWidth / 2;
+            const targetY = targetThimbleElementWrapper.offsetTop + targetThimbleElementWrapper.offsetHeight - 25; // Adjusted to appear more "under" the cup
+
+            thimbleBallVisualization.style.left = `${targetX}px`;
+            thimbleBallVisualization.style.top = `${targetY}px`;
+            thimbleBallVisualization.style.transform = `translateX(-50%)`; // Keep it centered relative to its left
+        }
+
+
+        function resetThimblesGame() {
+            thimblesBallPosition = Math.floor(Math.random() * 3); // Random initial position
+            thimblesGameActive = true;
+            thimblesAnimating = false;
+            thimblesGameMessage.textContent = 'Place your bet and click start.';
+            thimblesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-text';
+            startGameThimblesBtn.classList.remove('hidden');
+            startGameThimblesBtn.disabled = false;
+            resetThimblesGameBtn.classList.add('hidden');
+            thimbleBallVisualization.classList.remove('visible'); // Hide ball
+
+            // Reset visual positions and classes of thimbles
+            thimbleElements.forEach((thimbleWrapper, logicalIndex) => {
+                thimbleWrapper.classList.remove('lifted', 'correct', 'incorrect');
+                thimbleWrapper.removeEventListener('click', handleThimbleClick); // Ensure no old listeners
+
+                // Reset physical position to match its initial logical position for a clean start
+                // This assumes `data-index` corresponds to initial visual slot.
+                thimbleWrapper.style.left = `${slotXPositions[logicalIndex]}px`;
+            });
+            visualSlotMapping = [0, 1, 2]; // Reset visual slot mapping to initial logical order
+
+            updateBallPosition(thimblesBallPosition); // Place ball under its designated thimble
+            updateBetDisplay('thimbles');
+            renderHistory(thimblesHistoryDiv, thimblesGameHistory); // Render history on reset/load
+            clearConfetti(); // Clear any active confetti
+        }
+
+        function startGameThimbles() {
+            if (currentBalance < thimblesBetAmount) {
+                thimblesGameMessage.textContent = 'Insufficient balance!';
+                thimblesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                return;
+            }
+            if (thimblesAnimating) {
+                thimblesGameMessage.textContent = 'Please wait for the animation to finish.';
+                thimblesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-yellow-500';
+                return;
+            }
+
+            currentBalance -= thimblesBetAmount;
+            animateBalance(currentBalance);
+            startGameThimblesBtn.disabled = true;
+            resetThimblesGameBtn.classList.add('hidden');
+            thimbleBallVisualization.classList.remove('visible'); // Hide ball
+            clearConfetti(); // Clear any active confetti
+
+            thimbleElements.forEach(thimble => {
+                thimble.classList.remove('lifted', 'correct', 'incorrect');
+                thimble.removeEventListener('click', handleThimbleClick); // Remove listener during shuffle
+            });
+
+            thimblesGameMessage.textContent = 'Shuffling...';
+            thimblesAnimating = true;
+
+            // Determine initial ball position (hidden from user)
+            let initialBallPos = Math.floor(Math.random() * 3);
+
+            // Rule: Memory Trap - Rigging for consistent patterns
+            let riggedShuffle = false;
+            // Check if all last 3 winning picks were the same cup
+            if (thimblesUserWinPattern.length === 3 && new Set(thimblesUserWinPattern).size === 1) {
+                if (Math.random() < 0.7) { // 70% chance to rig
+                    const commonWinIndex = thimblesUserWinPattern[0];
+                    // Rig the ball to be under one of the *other* cups
+                    const availablePositions = [0, 1, 2].filter(pos => pos !== commonWinIndex);
+                    initialBallPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+                    riggedShuffle = true;
+                    console.log(`Debug: Memory trap activated. Rigging ball away from favorite cup (logical ${commonWinIndex}) to logical ${initialBallPos}.`);
+                    thimblesUserWinPattern = []; // Reset pattern after rigging
+                }
+            }
+
+            // Rule: Bias Toward Wrong Picks - After 2 wins, increase wrong pick placement on favorite thimble
+            if (thimblesConsecutiveWins >= 2 && thimblesFavoriteThimble !== null && Math.random() < 0.6) {
+                if (initialBallPos === thimblesFavoriteThimble) { // If the ball is currently under the favorite thimble
+                    const availablePositions = [0, 1, 2].filter(pos => pos !== initialBallPos);
+                    initialBallPos = availablePositions[Math.floor(Math.random() * availablePositions.length)];
+                    console.log(`Debug: Bias toward wrong picks activated. Shifted ball from favorite thimble (logical ${thimblesFavoriteThimble}) to logical ${initialBallPos}.`);
+                }
+            }
+            thimblesBallPosition = initialBallPos; // Set the actual ball position
+
+            // Initial visual setup for thimbles
+            // Ensure `style.left` for all thimbles is based on their initial visual slots
+            thimbleElements.forEach((thimble, index) => {
+                thimble.style.left = `${slotXPositions[index]}px`;
+                thimble.style.transition = 'left 0.3s ease-in-out, transform 0.2s ease-out'; // Faster transitions
+            });
+            visualSlotMapping = [0, 1, 2]; // Reset the logical mapping to initial visual order
+
+            // Animate the ball to its starting thimble's position (before shuffle starts)
+            // User won't see this as thimbles are down.
+            updateBallPosition(thimblesBallPosition);
+
+
+            const shuffleAnimationDuration = 300; // Faster duration for each individual swap
+            const swapDelay = 100; // Shorter delay between swaps
+            let shuffleCount = 0;
+            const maxShuffles = Math.floor(Math.random() * 4) + 5; // 5-8 shuffles
+
+            // Define the specific cyclic swaps based on LOGICAL indices (n1, n2, n3 are data-index 0, 1, 2)
+            // Sequence: (n1 <-> n3), then (n3 <-> n2), then (n2 <-> n1)
+            // This is a single, compound shuffle action. We'll repeat this compound action.
+            const cyclicSwapOrder = [
+                [0, 2], // Logical cup 0 swaps with logical cup 2
+                [2, 1], // Logical cup 2 swaps with logical cup 1
+                [1, 0]  // Logical cup 1 swaps with logical cup 0
+            ];
+
+            function performOneCyclicShuffle(callback) {
+                let currentSwapIndex = 0;
+
+                function executeSwap() {
+                    if (currentSwapIndex >= cyclicSwapOrder.length) {
+                        // All three swaps in the cycle are done
+                        callback();
+                        return;
+                    }
+
+                    const swap = cyclicSwapOrder[currentSwapIndex];
+                    const logicalIndex1 = swap[0]; // e.g., 0 (n1)
+                    const logicalIndex2 = swap[1]; // e.g., 2 (n3)
+
+                    // Find current visual positions of these logical cups
+                    const currentVisualSlot1 = visualSlotMapping.indexOf(logicalIndex1);
+                    const currentVisualSlot2 = visualSlotMapping.indexOf(logicalIndex2);
+
+                    // Get the actual DOM elements (which maintain their data-index)
+                    const thimbleElement1 = thimbleElements[logicalIndex1];
+                    const thimbleElement2 = thimbleElements[logicalIndex2];
+
+                    // Animate their actual DOM 'left' positions
+                    const targetLeft1 = slotXPositions[currentVisualSlot2];
+                    const targetLeft2 = slotXPositions[currentVisualSlot1];
+
+                    let startTime = null;
+
+                    function animateOnePairSwap(currentTime) {
+                        if (!startTime) startTime = currentTime;
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / shuffleAnimationDuration, 1);
+                        const easeProgress = 0.5 - 0.5 * Math.cos(progress * Math.PI); // Ease-in-out
+
+                        const currentLeft1 = slotXPositions[currentVisualSlot1] + (targetLeft1 - slotXPositions[currentVisualSlot1]) * easeProgress;
+                        const currentLeft2 = slotXPositions[currentVisualSlot2] + (targetLeft2 - slotXPositions[currentVisualSlot2]) * easeProgress;
+
+                        thimbleElement1.style.left = `${currentLeft1}px`;
+                        thimbleElement2.style.left = `${currentLeft2}px`;
+
+                        // If the ball is under one of these thimbles, update its position too
+                        // The ball's logical position doesn't change during shuffle, only its visual position needs to follow the cup it's under
+                        // The ball should be centered under the moving cup.
+                        if (thimblesBallPosition === logicalIndex1) {
+                            thimbleBallVisualization.style.left = `${currentLeft1 + thimbleElement1.offsetWidth / 2}px`;
+                        } else if (thimblesBallPosition === logicalIndex2) {
+                            thimbleBallVisualization.style.left = `${currentLeft2 + thimbleElement2.offsetWidth / 2}px`;
+                        }
+
+                        if (progress < 1) {
+                            requestAnimationFrame(animateOnePairSwap);
+                        } else {
+                            // SNAP TO FINAL POSITION to ensure perfect alignment
+                            thimbleElement1.style.left = `${targetLeft1}px`;
+                            thimbleElement2.style.left = `${targetLeft2}px`;
+
+                            // Ensure ball also snaps to its final position under the correct cup
+                            if (thimblesBallPosition === logicalIndex1) {
+                                thimbleBallVisualization.style.left = `${targetLeft1 + thimbleElement1.offsetWidth / 2}px`;
+                            } else if (thimblesBallPosition === logicalIndex2) {
+                                thimbleBallVisualization.style.left = `${targetLeft2 + thimbleElement2.offsetWidth / 2}px`;
+                            }
+
+
+                            // Update the `visualSlotMapping` *after* animation for the current swap is complete
+                            // Swap the values in the visualSlotMapping array
+                            visualSlotMapping[currentVisualSlot1] = logicalIndex2;
+                            visualSlotMapping[currentVisualSlot2] = logicalIndex1;
+
+                            currentSwapIndex++;
+                            setTimeout(executeSwap, swapDelay); // Delay before next swap in the cycle
+                        }
+                    }
+                    requestAnimationFrame(animateOnePairSwap);
+                }
+                executeSwap(); // Start the first swap in the cycle
+            }
+
+
+            function shuffleLoop() {
+                if (shuffleCount >= maxShuffles) {
+                    thimblesAnimating = false;
+                    thimblesGameMessage.textContent = 'Where is the ball? Pick a thimble!';
+                    thimbleElements.forEach(thimble => thimble.addEventListener('click', handleThimbleClick));
+                    return;
+                }
+
+                performOneCyclicShuffle(() => {
+                    shuffleCount++;
+                    shuffleLoop(); // Call next shuffle cycle
+                });
+            }
+
+            // Start the shuffle animation after a brief delay to show initial state
+            setTimeout(() => {
+                thimbleBallVisualization.classList.remove('visible'); // Hide ball immediately for shuffle
+                shuffleLoop();
+            }, 500);
+        }
+
+        function handleThimbleClick(event) {
+            if (thimblesAnimating) return;
+            thimblesAnimating = true; // Prevent further clicks
+
+            const pickedThimbleElement = event.currentTarget; // The div wrapper
+            const pickedLogicalIndex = parseInt(pickedThimbleElement.dataset.index); // Logical index of the picked thimble
+            thimblesPickCounts[pickedLogicalIndex]++; // Track user picks
+
+            // Temporarily lift only the picked thimble
+            pickedThimbleElement.classList.add('lifted');
+
+            thimbleElements.forEach(thimble => thimble.removeEventListener('click', handleThimbleClick)); // Disable further clicks
+
+            // Reveal ball after a short delay
+            setTimeout(() => {
+                let win = (pickedLogicalIndex === thimblesBallPosition);
+                let winnings = 0;
+
+                if (win) {
+                    winnings = thimblesBetAmount * 2; // Double the bet for a win
+                    currentBalance += winnings;
+                    animateBalance(currentBalance);
+                    thimblesGameMessage.textContent = `You picked correctly! You won ${CURRENCY_SYMBOL}${winnings.toFixed(2)}!`;
+                    thimblesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-stake-green';
+                    pickedThimbleElement.classList.add('correct');
+                    thimblesWinSound.play();
+                    thimblesFavoriteThimble = pickedLogicalIndex; // Update favorite thimble on win
+                    showConfetti(); // Play confetti on win
+                } else {
+                    winnings = 0;
+                    thimblesGameMessage.textContent = `Wrong pick! You lost ${CURRENCY_SYMBOL}${thimblesBetAmount.toFixed(2)}.`;
+                    thimblesGameMessage.className = 'text-lg font-semibold text-center mt-4 text-red-500';
+                    pickedThimbleElement.classList.add('incorrect');
+                    thimblesLoseSound.play();
+                }
+
+                // Show the ball at its final position (under the correct thimble)
+                updateBallPosition(thimblesBallPosition); // Position ball under the correct logical thimble
+                thimbleBallVisualization.classList.add('visible');
+
+                // If lost, lift the correct thimble after a short delay
+                if (!win) {
+                    setTimeout(() => {
+                        // Find the actual DOM element for the thimble containing the ball
+                        const correctThimbleElement = thimbleElements[thimblesBallPosition];
+                        correctThimbleElement.classList.add('lifted'); // Lift the correct thimble
+                        thimblesGameMessage.textContent += ` The ball was under thimble ${thimblesBallPosition + 1}.`;
+                    }, 1000); // Delay before revealing correct cup
+                }
+
+                recordGameHistory('thimbles', thimblesBetAmount, winnings, win, pickedLogicalIndex);
+                saveGameState(); // Save state after game end
+                renderHistory(thimblesHistoryDiv, thimblesGameHistory); // Update history display
+
+                setTimeout(() => {
+                    thimblesAnimating = false;
+                    resetThimblesGameBtn.classList.remove('hidden');
+                    startGameThimblesBtn.disabled = false;
+                }, win ? 2000 : 2500); // Shorter delay for win, longer for loss to reveal correct cup
+            }, 700); // Delay for initial lifting animation
+        }
+
+        function showConfetti() {
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 70%)`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                confetti.style.animationDuration = `${2 + Math.random() * 1}s`;
+                confettiContainer.appendChild(confetti);
+            }
+            setTimeout(clearConfetti, 3000); // Clear confetti after 3 seconds
+        }
+
+        function clearConfetti() {
+            confettiContainer.innerHTML = '';
+        }
+
+        // Thimbles Event Listeners
+        betAmountSliderThimbles.addEventListener('input', () => updateBetDisplay('thimbles'));
+        manualBetInputThimbles.addEventListener('input', () => {
+            let value = parseFloat(manualBetInputThimbles.value);
+            if (isNaN(value)) value = 0.1;
+            value = Math.max(0.1, Math.min(100, value));
+            betAmountSliderThimbles.value = value.toFixed(1);
+            updateBetDisplay('thimbles');
+        });
+        startGameThimblesBtn.addEventListener('click', startGameThimbles);
+        resetThimblesGameBtn.addEventListener('click', resetThimblesGame);
+
+        // --- Initialization ---
+        window.onload = () => {
+            loadGameState(); // Load balance and used codes
+            animateBalance(currentBalance); // Always update display with loaded or default balance
+
+            // Set initial value for sliders and manual input for all games
+            betAmountSliderAviator.value = aviatorBetAmount;
+            manualBetInputAviator.value = aviatorBetAmount.toFixed(2);
+            betAmountValueAviator.textContent = `${CURRENCY_SYMBOL} ${aviatorBetAmount.toFixed(2)}`;
+
+            betAmountSliderMines.value = minesBetAmount;
+            manualBetInputMines.value = minesBetAmount.toFixed(2);
+            betAmountValueMines.textContent = `${CURRENCY_SYMBOL} ${minesBetAmount.toFixed(2)}`;
+            minesCountValue.textContent = minesSelectedCount;
+
+            betAmountSliderPlinko.value = plinkoBetAmount;
+            manualBetInputPlinko.value = plinkoBetAmount.toFixed(2);
+            betAmountValuePlinko.textContent = `${CURRENCY_SYMBOL} ${plinkoBetAmount.toFixed(2)}`;
+            const riskLabels = ['Low', 'Medium', 'High'];
+            plinkoRiskValue.textContent = riskLabels[plinkoSelectedRisk];
+
+            betAmountSliderThimbles.value = thimblesBetAmount; // Renamed
+            manualBetInputThimbles.value = thimblesBetAmount.toFixed(2); // Renamed
+            betAmountValueThimbles.textContent = `${CURRENCY_SYMBOL} ${thimblesBetAmount.toFixed(2)}`; // Renamed
+
+            // Calculate initial slot positions for thimbles
+            calculateSlotPositions();
+            window.addEventListener('resize', calculateSlotPositions); // Recalculate on resize
+
+
+            // Determine if it's the very first visit (no balance saved)
+            const isFirstVisit = (localStorage.getItem('currentBalance') === null);
+
+            if (isFirstVisit) {
+                showRedeemPopup();
+            } else {
+                // For existing users, show a splash screen before showing games
+                showSplashScreen(() => {
+                    showGameType('home'); // Then show home page content after splash
+                });
+            }
+            initCarousel(); // Initialize the carousel
+            window.addEventListener('resize', updateCarouselDisplay); // Update carousel on resize
+        };
+    </script>
+</body>
+</html>
